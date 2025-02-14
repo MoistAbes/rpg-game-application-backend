@@ -24,9 +24,10 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, Long userId) {
         return Jwts.builder()
                 .subject(username)
+                .claim("userId", userId)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
                 .signWith(getSigningKey()) // Secure key
@@ -34,14 +35,6 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token) {
-
-
-
-        System.out.println("Validating token");
-        System.out.println(token);
-        System.out.println("Expiration date: " + extractExpiration(token));
-        System.out.println("Claims: " + extractClaim(token, Claims::getSubject));
-
         try {
             Jwts.parser()
                     .verifyWith(getSigningKey()) // Verify signature
@@ -59,7 +52,14 @@ public class JwtUtil {
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+
     }
+
+    //do wykorzystania pozniej
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", Long.class));
+    }
+
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = Jwts.parser()

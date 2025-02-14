@@ -1,6 +1,6 @@
 package dev.zymixon.user_service.services;
 
-import dev.zymixon.user_service.controllers.UserController;
+
 import dev.zymixon.user_service.entities.UserInfo;
 import dev.zymixon.user_service.exceptions.UserAlreadyExistsException;
 import dev.zymixon.user_service.repositories.UserInfoRepository;
@@ -8,7 +8,6 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -18,8 +17,10 @@ public class UserInfoService {
     private static final Logger logger = LoggerFactory.getLogger(UserInfoService.class);
 
 
+
     public UserInfoService(UserInfoRepository userInfoRepository) {
         this.userInfoRepository = userInfoRepository;
+
     }
 
     public UserInfo getUserByUsername(String username) {

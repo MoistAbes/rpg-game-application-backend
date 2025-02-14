@@ -33,19 +33,14 @@ public class AuthService {
 
         UserInfo userInfo = userInfoService.findUserByUsername(loginRequest.getUsername());
 
-        if (userInfo != null) {
-//            if (passwordMatches(userInfo.getPassword(), loginRequest.getPassword())) {
-            if (PasswordUtil.passwordMatches(userInfo.getPassword(), loginRequest.getPassword())) {
-                String token = jwtUtil.generateToken(userInfo.getUsername());
-                return Mono.just(ResponseEntity.ok("Bearer " + token));
-            }else {
-                logger.error("Invalid password");
-                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password"));
-            }
+        if (PasswordUtil.passwordMatches(userInfo.getPassword(), loginRequest.getPassword())) {
+            String token = jwtUtil.generateToken(userInfo.getUsername(), userInfo.getId());
+            return Mono.just(ResponseEntity.ok("Bearer " + token));
         }else {
-            logger.error("User not found");
-            return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid username or password"));
+            logger.error("Invalid password");
+            return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password"));
         }
+
 
     }
 

@@ -23,6 +23,7 @@ public class UserInfo {
     private String password;
     private String email;
 
+
     @Override
     public String toString() {
         return "UserInfo{" +

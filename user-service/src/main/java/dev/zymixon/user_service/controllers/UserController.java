@@ -4,7 +4,6 @@ import dev.zymixon.user_service.entities.UserInfo;
 import dev.zymixon.user_service.services.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,13 +17,6 @@ public class UserController {
 
     public UserController(UserInfoService userInfoService) {
         this.userInfoService = userInfoService;
-    }
-
-    @GetMapping("/get-by-username/{username}")
-    public ResponseEntity<UserInfo> getByUsername(@PathVariable String username) {
-        logger.info("users/get-by-username/ {}", username);
-
-        return ResponseEntity.ok(userInfoService.getUserByUsername(username));
     }
 
 

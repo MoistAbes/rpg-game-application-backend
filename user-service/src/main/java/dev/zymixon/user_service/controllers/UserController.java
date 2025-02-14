@@ -23,20 +23,16 @@ public class UserController {
     @GetMapping("/get-by-username/{username}")
     public ResponseEntity<UserInfo> getByUsername(@PathVariable String username) {
         logger.info("users/get-by-username/ {}", username);
-        UserInfo userInfo = userInfoService.getUserByUsername(username);
-        return ResponseEntity.ok(userInfo);
+
+        return ResponseEntity.ok(userInfoService.getUserByUsername(username));
     }
 
-    @GetMapping("/test")
-    public String test() {
-        logger.info("users/test");
-
-        return "test";
-    }
 
     @PostMapping("/register")
     public UserInfo register(@RequestBody UserInfo userInfo) {
-       return userInfoService.createUser(userInfo);
+        logger.info("users/register/ {}", userInfo.getUsername());
+
+        return userInfoService.createUser(userInfo);
     }
 
 }

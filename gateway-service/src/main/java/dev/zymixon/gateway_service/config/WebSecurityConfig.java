@@ -42,7 +42,7 @@ public class WebSecurityConfig {
                 .authenticationManager(authenticationManager)
                 .securityContextRepository(securityContextRepository)
                 .authorizeExchange(auth -> auth
-                        .pathMatchers("/auth/**")
+                        .pathMatchers("/auth/**", "/users/register")
                         .permitAll()
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyExchange().authenticated()

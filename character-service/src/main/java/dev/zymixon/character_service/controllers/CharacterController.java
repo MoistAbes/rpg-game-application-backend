@@ -2,6 +2,7 @@ package dev.zymixon.character_service.controllers;
 
 import dev.zymixon.character_service.repositories.CharacterRepository;
 import dev.zymixon.character_service.entities.MyCharacter;
+import dev.zymixon.character_service.services.CharacterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -13,30 +14,25 @@ import java.util.List;
 @RequestMapping("/characters")
 public class CharacterController {
 
-    private final CharacterRepository characterRepository;
+    private final CharacterService characterService;
 
     private static final Logger logger = LoggerFactory.getLogger(CharacterController.class);
 
+    public CharacterController(CharacterService characterService) {
+        this.characterService = characterService;
 
-    public CharacterController(CharacterRepository characterRepository) {
-        this.characterRepository = characterRepository;
     }
 
-    @GetMapping("/get-all")
-    public List<MyCharacter> getAllCharacters() {
-        logger.info("/characters/get-all");
-        return characterRepository.findAll();
+    @GetMapping("/get-all-by-user/{userId}")
+    public List<MyCharacter> getAllByUser(@PathVariable Long userId) {
+        logger.info("/characters/get-all-by-user/");
+
+        return characterService.getCharactersByUserId(userId);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        logger.info("/characters/test");
-        return ResponseEntity.ok("Hello World");
-    }
-
-    @PostMapping
-    public MyCharacter createCharacter(@RequestBody MyCharacter character) {
-        return characterRepository.save(character);
+    @PostMapping("/create/{name}/{userId}")
+    public MyCharacter createCharacter(@PathVariable String name, @PathVariable Long userId) {
+        return characterService.createCharacter(name, userId);
     }
 
 }

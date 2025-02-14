@@ -22,7 +22,7 @@ spring:
             - Path=/characters/**
           filters:
            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
-#           - JwtGatewayFilter  # No need for 'name:' since it's automatically registered as a factory
+
 
         - id: USER-SERVICE
           uri: lb://USER-SERVICE # Uses Eureka service discovery
@@ -30,7 +30,7 @@ spring:
               - Path=/users/**  # Add the appropriate path for user service
           filters:
            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
-#           - JwtGatewayFilter  # No need for 'name:' since it's automatically registered as a factory
+
 eureka:
   client:
     service-url:

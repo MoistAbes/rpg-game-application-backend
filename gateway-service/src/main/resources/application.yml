@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    web-application-type: reactive  # This sets the application to use the reactive stack
+  application:
+    name: GATEWAY-SERVICE
+
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/]':
+            allowedOrigins: ""
+            allowedMethods: ""
+            allowedHeaders: "*"
+      routes:
+        - id: CHARACTER-SERVICE
+          uri: lb://CHARACTER-SERVICE # Uses Eureka service discovery
+          predicates:
+            - Path=/characters/**
+          filters:
+           - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+#           - JwtGatewayFilter  # No need for 'name:' since it's automatically registered as a factory
+
+        - id: USER-SERVICE
+          uri: lb://USER-SERVICE # Uses Eureka service discovery
+          predicates:
+              - Path=/users/**  # Add the appropriate path for user service
+          filters:
+           - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+#           - JwtGatewayFilter  # No need for 'name:' since it's automatically registered as a factory
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/ # Connect to Eureka Server
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+jwt:
+  secret: "34ad13283e0f535385a80a727df127564191dcf3c28e17599a30016f830e86ad6c047e137056455784bae36cce0752c5b1d4e7fc18377d2bbcd67775f606d6d383c036924c1fb0eb44392b6577e5646229653520e25fef00073640af93c674a0d90a856d53218520e34331595de0487d42c54fce78e354354519d3bfa3f05cc7243b6e5e0606d310a389e91e67fb02f6d6f176ff0b36a283e4f7ded4601d1516242912d7d3df6c634e8e3a4d953c354d3cee1a07e56a5fc867d254c319300f80f31df9cf35953a80e27b470f3a0d315e6b6bc5fe355387db9cbaad89d9eb0d8ac7727ab5fd2c396c6e02bce56538cfa212e0ccab154cc22a328b457b48509c8a"
+
+

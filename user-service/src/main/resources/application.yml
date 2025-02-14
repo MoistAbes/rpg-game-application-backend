@@ -1,0 +1,13 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: USER-SERVICE
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/ # Connect to Eureka Server
+  instance:
+    prefer-ip-address: true # Optional, based on your preference

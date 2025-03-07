@@ -1,9 +1,6 @@
 package dev.zymixon.character_service.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -20,11 +17,22 @@ public class MyCharacter {
     private String name;
     private int level;
     private int experience;
-    private int attack;
-    private int defense;
-
-    private int maxHealth;
-    private int currentHealth;
-
     private Long userId; // Reference to UserInfo in user-service
+    private Long goldAmount;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "character_stats_id")
+    private CharacterStats characterStats;
+
+    @Override
+    public String toString() {
+        return "MyCharacter{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", level=" + level +
+                ", experience=" + experience +
+                ", userId=" + userId +
+                ", goldAmount=" + goldAmount +
+                '}';
+    }
 }

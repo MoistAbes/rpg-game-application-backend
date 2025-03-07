@@ -16,6 +16,12 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(CharacterNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleCharacterNotFoundException(CharacterNotFoundException ex) {
+        logger.error("Character not found error: {}", ex.getMessage(), ex);
+        return buildErrorResponse("Character does not exist", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex) {
         logger.error("Unexpected error: {}", ex.getMessage(), ex);

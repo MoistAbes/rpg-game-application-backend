@@ -55,6 +55,14 @@ public class WebSecurityConfig {
                                 Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN))
                         )
                 )
+                .cors(cors -> cors.configurationSource(request -> {
+                    var config = new org.springframework.web.cors.CorsConfiguration();
+                    config.addAllowedOrigin("http://localhost:4200");  // Your frontend URL
+                    config.addAllowedMethod("*");  // Allow all methods (GET, POST, etc.)
+                    config.addAllowedHeader("*");  // Allow all headers
+                    config.setAllowCredentials(true);  // Allow cookies and credentials
+                    return config;
+                }))
                 .build();
     }
 

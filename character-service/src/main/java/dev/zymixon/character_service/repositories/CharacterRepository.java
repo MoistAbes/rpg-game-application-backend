@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CharacterRepository extends JpaRepository<MyCharacter, Integer> {
+public interface CharacterRepository extends JpaRepository<MyCharacter, Long> {
 
     @Query("SELECT c from MyCharacter c where c.userId = :userId")
     List<MyCharacter> findAllByUserId(@Param("userId") Long userId);

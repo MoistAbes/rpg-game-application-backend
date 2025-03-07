@@ -2,6 +2,7 @@ package dev.zymixon.gateway_service.exceptions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.gateway.support.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +16,33 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Map<String, Object>> handleUnauthorizedException(UnauthorizedException ex) {
+        logger.warn("Authorization failed error: {}", ex.getMessage());
+        return buildErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNotFoundException(NotFoundException ex) {
+        logger.error("Service discovery error: {}", ex.getMessage());
+
+        // Extract service name (e.g., "INVENTORY-SERVICE")
+        String missingService = extractServiceName(ex.getMessage());
+
+        return buildErrorResponse(
+                "Service " + missingService + " is unavailable. Please try again later.",
+                HttpStatus.SERVICE_UNAVAILABLE
+        );
+    }
+
+    // Helper method to extract service name from the error message
+    private String extractServiceName(String errorMessage) {
+        if (errorMessage != null && errorMessage.contains("Unable to find instance for")) {
+            return errorMessage.substring(errorMessage.lastIndexOf("for") + 4).replace("\"", "").trim();
+        }
+        return "Unknown Service";
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleUserNotFoundException(UserNotFoundException ex) {

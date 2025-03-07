@@ -28,6 +28,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(username)
                 .claim("userId", userId)
+                .claim("username", username)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
                 .signWith(getSigningKey()) // Secure key

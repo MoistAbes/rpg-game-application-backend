@@ -1,5 +1,6 @@
 package dev.zymixon.character_service.services;
 
+import dev.zymixon.character_service.entities.CharacterStats;
 import dev.zymixon.character_service.entities.MyCharacter;
 
 public class CharacterCreatorUtil {
@@ -9,10 +10,12 @@ public class CharacterCreatorUtil {
                 .name(characterName)
                 .level(1)
                 .experience(0)
-                .attack(5)
-                .defense(0)
-                .maxHealth(100)
-                .currentHealth(100)
+                .characterStats(CharacterStats.builder()
+                        .attack(5)
+                        .defense(0)
+                        .maxHealth(100)
+                        .currentHealth(100)
+                        .build())
                 .userId(userId)
                 .build();
 

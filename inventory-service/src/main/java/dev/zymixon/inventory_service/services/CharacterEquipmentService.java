@@ -59,7 +59,9 @@ public class CharacterEquipmentService {
         inventorySlotRepository.clearInventorySlotItem(inventorySlotId);
 
         //equip item from inventory
-        characterEquipmentRepository.updateCharacterEquipmentHelmet(inventorySlot.getItemInstance(), equipmentId);
+        equipItem(inventorySlot.getItemInstance(), itemType, equipmentId);
+//        characterEquipmentRepository.updateCharacterEquipmentHelmet(inventorySlot.getItemInstance(), equipmentId);
+
 
         //add to iventory equipment item
         inventorySlotRepository.updateInventoryItemBySlotId(equipmentItem.getId(), inventorySlot.getId());
@@ -81,7 +83,7 @@ public class CharacterEquipmentService {
 
         equipItem(inventorySlot.getItemInstance(), itemType, equipmentId);
 
-        //send message to character about unequipping item
+        //send message to character about equipping item
         messageSenderService.sendEquipmentChangeInformation(null, inventorySlot.getItemInstance(), itemType, characterEquipment.getCharacterId());
 
 
@@ -117,6 +119,8 @@ public class CharacterEquipmentService {
             case CHEST_ITEM_INSTANCE -> characterEquipmentRepository.updateCharacterEquipmentChest(itemInstance, equipmentId);
             case GLOVES_ITEM_INSTANCE -> characterEquipmentRepository.updateCharacterEquipmentGloves(itemInstance, equipmentId);
             case BOOTS_ITEM_INSTANCE -> characterEquipmentRepository.updateCharacterEquipmentBoots(itemInstance, equipmentId);
+
+            case WEAPON_ITEM_INSTANCE ->     characterEquipmentRepository.updateCharacterEquipmentMainHand(itemInstance, equipmentId);
         }
 
     }
@@ -128,11 +132,17 @@ public class CharacterEquipmentService {
             case CHEST_ITEM_INSTANCE -> characterEquipmentRepository.updateCharacterEquipmentChest(null, equipmentId);
             case GLOVES_ITEM_INSTANCE -> characterEquipmentRepository.updateCharacterEquipmentGloves(null, equipmentId);
             case BOOTS_ITEM_INSTANCE -> characterEquipmentRepository.updateCharacterEquipmentBoots(null, equipmentId);
+
+            case WEAPON_ITEM_INSTANCE -> characterEquipmentRepository.updateCharacterEquipmentMainHand(null, equipmentId);
+
         }
 
     }
 
     private ItemInstance getEquipmentItem(ItemType itemType, CharacterEquipment characterEquipment) {
+
+        System.out.println("GET EQUIPMENT ITEM: " + itemType);
+
         switch (itemType) {
             case BOOTS_ITEM_INSTANCE -> {
                 return characterEquipment.getBoots();
@@ -145,6 +155,9 @@ public class CharacterEquipmentService {
             }
             case GLOVES_ITEM_INSTANCE -> {
                 return characterEquipment.getGloves();
+            }
+            case WEAPON_ITEM_INSTANCE -> {
+                return characterEquipment.getMainHand();
             }
             default -> throw new InventorySlotNotFoundException("Inventory slot not found!");
         }

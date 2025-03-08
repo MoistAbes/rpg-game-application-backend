@@ -16,6 +16,7 @@ public class CharacterEquipmentDto {
     private ItemInstanceDto chest;
     private ItemInstanceDto gloves;
     private ItemInstanceDto boots;
+    private ItemInstanceDto mainHand;
 
     @Override
     public String toString() {
@@ -24,6 +25,7 @@ public class CharacterEquipmentDto {
                 ", helmet=" + helmet +
                 ", chest=" + chest +
                 ", armor=" + gloves +
+                ", mainHand=" + mainHand +
                 '}';
     }
 }

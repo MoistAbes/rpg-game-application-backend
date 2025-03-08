@@ -1,6 +1,6 @@
 package dev.zymixon.inventory_service.entities.instance.impl;
 
-import dev.zymixon.inventory_service.entities.template.SwordItemTemplate;
+import dev.zymixon.inventory_service.entities.template.AxeItemTemplate;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -9,22 +9,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@DiscriminatorValue("SWORD")
+@DiscriminatorValue("AXE")
 @Getter
 @Setter
-public class SwordItemInstance extends WeaponItemInstance{
+public class AxeItemInstance extends WeaponItemInstance {
 
     //ToDO przemyslec jak zrobić z templatem bo chyba do zmiany jest w armorach
     @OneToOne
-    @JoinColumn(name = "sword_template_id")
-    private SwordItemTemplate swordTemplate;
+    @JoinColumn(name = "axe_template_id")
+    private AxeItemTemplate axeTemplate;
 
 
     @Override
     public String toString() {
-        return "SwordItemTemplate{" +
+        return "AxeItemTemplate{" +
                 super.toString() +
-                "swordTemplate=" + swordTemplate +
+                "axeTemplate=" + axeTemplate +
                 '}';
     }
 }

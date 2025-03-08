@@ -19,6 +19,7 @@ public class RabbitMQConfig {
     public static final String CHEST_QUEUE = "chestQueue";
     public static final String GLOVES_QUEUE = "glovesQueue";
     public static final String BOOTS_QUEUE = "bootsQueue";
+    public static final String WEAPON_QUEUE = "weaponQueue";
 
     public static final String EXCHANGE_NAME = "exampleExchange";
 
@@ -27,6 +28,7 @@ public class RabbitMQConfig {
     public static final String CHEST_ROUTING_KEY = "chestRoutingKey";
     public static final String GLOVES_ROUTING_KEY = "glovesRoutingKey";
     public static final String BOOTS_ROUTING_KEY = "bootsRoutingKey";
+    public static final String WEAPON_ROUTING_KEY = "weaponRoutingKey";
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
@@ -75,6 +77,10 @@ public class RabbitMQConfig {
     public Queue bootsQueue() {
         return new Queue(BOOTS_QUEUE, false);
     }
+    @Bean
+    public Queue weaponQueue() {
+        return new Queue(WEAPON_QUEUE, false);
+    }
 
 
     //EXCHANGE
@@ -107,5 +113,10 @@ public class RabbitMQConfig {
     @Bean
     public Binding bootsBinding() {
         return BindingBuilder.bind(bootsQueue()).to(exchange()).with(BOOTS_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding weaponBinding() {
+        return BindingBuilder.bind(weaponQueue()).to(exchange()).with(WEAPON_ROUTING_KEY);
     }
 }

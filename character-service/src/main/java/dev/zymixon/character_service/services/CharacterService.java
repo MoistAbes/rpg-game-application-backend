@@ -1,6 +1,7 @@
 package dev.zymixon.character_service.services;
 
 import dev.zymixon.character_service.dto.EquipmentChangeDto;
+import dev.zymixon.character_service.dto.EquipmentWeaponChangeDto;
 import dev.zymixon.character_service.dto.ItemStatDto;
 import dev.zymixon.character_service.entities.CharacterStats;
 import dev.zymixon.character_service.entities.MyCharacter;
@@ -68,6 +69,7 @@ public class CharacterService {
     }
 
 
+
     private CharacterStats handleItemUnequip(MyCharacter character, EquipmentChangeDto equipmentChangeDto) {
 
         character.getCharacterStats().setDefense(character.getCharacterStats().getDefense() - equipmentChangeDto.getPrevArmorValue());
@@ -87,11 +89,7 @@ public class CharacterService {
             }
         }
 
-        //save character after changes
-//         MyCharacter savedCharacter = characterRepository.save(character);
         return character.getCharacterStats();
-
-
     }
 
     private CharacterStats handleItemEquip(MyCharacter character, EquipmentChangeDto equipmentChangeDto){
@@ -113,14 +111,84 @@ public class CharacterService {
             }
         }
 
-        //save character after changes
-//        characterRepository.save(character);
         return character.getCharacterStats();
 
     }
 
     private void handleItemSwap() {
+        //ToDO poki co przy swapie po prostu zdejmuje i zakladam nie wiem czy bedzie potrzeba osobnej metody do swapu
 
+    }
+
+
+
+//    WEAPON
+
+    public boolean calculateCharacterWeaponStats(EquipmentWeaponChangeDto equipmentWeaponChangeDto) {
+
+        MyCharacter character = getCharacterById(equipmentWeaponChangeDto.getCharacterId());
+
+        if (equipmentWeaponChangeDto.getNewItemStats() == null) {
+            //we are removing item
+            System.out.println("unequiping weapon item");
+            characterStatsRepository.save(handleWeaponItemUnequip(character, equipmentWeaponChangeDto));
+            return true;
+        }else if (equipmentWeaponChangeDto.getPrevItemStats() == null) {
+            //we are equipping item
+            System.out.println("equipping weapon item");
+            characterStatsRepository.save(handleWeaponItemEquip(character, equipmentWeaponChangeDto));
+            return true;
+        }else {
+            //we are swapping item
+            System.out.println("swapping weapon items");
+            character.setCharacterStats(handleWeaponItemUnequip(character, equipmentWeaponChangeDto));
+            characterStatsRepository.save(handleWeaponItemEquip(character, equipmentWeaponChangeDto));
+            return true;
+
+
+        }
+    }
+
+    private CharacterStats handleWeaponItemEquip(MyCharacter character, EquipmentWeaponChangeDto equipmentWeaponChangeDto) {
+        character.getCharacterStats().setAttack(character.getCharacterStats().getAttack() + equipmentWeaponChangeDto.getNewDamageValue());
+
+        for (ItemStatDto itemStat : equipmentWeaponChangeDto.getNewItemStats()) {
+            ItemStatType statType = ItemStatType.valueOf(itemStat.getItemStatType()); // Convert String to Enum
+            switch (statType) {
+                case BONUS_HEALTH:
+                    character.getCharacterStats().setMaxHealth((int) (character.getCharacterStats().getMaxHealth() + itemStat.getValue()));
+                    break;
+                case BONUS_ARMOR:
+                    character.getCharacterStats().setDefense((int) (character.getCharacterStats().getDefense() + itemStat.getValue()));
+                    break;
+                default:
+                    // Handle unexpected cases if needed
+                    break;
+            }
+        }
+
+        return character.getCharacterStats();
+    }
+
+    private CharacterStats handleWeaponItemUnequip(MyCharacter character, EquipmentWeaponChangeDto equipmentWeaponChangeDto){
+        character.getCharacterStats().setAttack(character.getCharacterStats().getAttack() - equipmentWeaponChangeDto.getPrevDamageValue());
+
+        for (ItemStatDto itemStat : equipmentWeaponChangeDto.getPrevItemStats()) {
+            ItemStatType statType = ItemStatType.valueOf(itemStat.getItemStatType()); // Convert String to Enum
+            switch (statType) {
+                case BONUS_HEALTH:
+                    character.getCharacterStats().setMaxHealth((int) (character.getCharacterStats().getMaxHealth() - itemStat.getValue()));
+                    break;
+                case BONUS_ARMOR:
+                    character.getCharacterStats().setDefense((int) (character.getCharacterStats().getDefense() - itemStat.getValue()));
+                    break;
+                default:
+                    // Handle unexpected cases if needed
+                    break;
+            }
+        }
+
+        return character.getCharacterStats();
     }
 
 

@@ -18,16 +18,21 @@ public class ItemInstanceMapper {
     private final GlovesItemInstanceMapper glovesItemInstanceMapper;
     private final BootsItemInstanceMapper bootsItemInstanceMapper;
 
+    private final SwordItemInstanceMapper swordItemInstanceMapper;
+    private final AxeItemInstanceMapper axeItemInstanceMapper;
+
     // Use a map for more scalable mapping
     private final Map<ItemType, ItemMapper> itemMappers;
 
     public ItemInstanceMapper(CommonItemInstanceMapper commonItemInstanceMapper,
-                              HelmetItemInstanceMapper helmetItemInstanceMapper, ChestItemInstanceMapper chestItemInstanceMapper, GlovesItemInstanceMapper glovesItemInstanceMapper, BootsItemInstanceMapper bootsItemInstanceMapper) {
+                              HelmetItemInstanceMapper helmetItemInstanceMapper, ChestItemInstanceMapper chestItemInstanceMapper, GlovesItemInstanceMapper glovesItemInstanceMapper, BootsItemInstanceMapper bootsItemInstanceMapper, SwordItemInstanceMapper swordItemInstanceMapper, AxeItemInstanceMapper axeItemInstanceMapper) {
         this.commonItemInstanceMapper = commonItemInstanceMapper;
         this.helmetItemInstanceMapper = helmetItemInstanceMapper;
         this.chestItemInstanceMapper = chestItemInstanceMapper;
         this.glovesItemInstanceMapper = glovesItemInstanceMapper;
         this.bootsItemInstanceMapper = bootsItemInstanceMapper;
+        this.swordItemInstanceMapper = swordItemInstanceMapper;
+        this.axeItemInstanceMapper = axeItemInstanceMapper;
 
         // Initialize a map of mappers to handle different types of ItemInstances
         itemMappers = Map.of(
@@ -35,7 +40,9 @@ public class ItemInstanceMapper {
                 ItemType.HELMET_ITEM_INSTANCE, helmetItemInstanceMapper,
                 ItemType.CHEST_ITEM_INSTANCE, chestItemInstanceMapper,
                 ItemType.GLOVES_ITEM_INSTANCE, glovesItemInstanceMapper,
-                ItemType.BOOTS_ITEM_INSTANCE, bootsItemInstanceMapper
+                ItemType.BOOTS_ITEM_INSTANCE, bootsItemInstanceMapper,
+                ItemType.SWORD_ITEM_INSTANCE, swordItemInstanceMapper,
+                ItemType.AXE_ITEM_INSTANCE, axeItemInstanceMapper
         );
     }
 
@@ -65,6 +72,8 @@ public class ItemInstanceMapper {
             case ChestItemInstance chestItemInstance -> ItemType.CHEST_ITEM_INSTANCE;
             case GlovesItemInstance glovesItemInstance -> ItemType.GLOVES_ITEM_INSTANCE;
             case BootsItemInstance bootsItemInstance -> ItemType.BOOTS_ITEM_INSTANCE;
+            case SwordItemInstance swordItemInstance -> ItemType.SWORD_ITEM_INSTANCE;
+            case AxeItemInstance axeItemInstance -> ItemType.AXE_ITEM_INSTANCE;
             case null, default -> throw new IllegalArgumentException("Unknown item instance type");
         };
     }

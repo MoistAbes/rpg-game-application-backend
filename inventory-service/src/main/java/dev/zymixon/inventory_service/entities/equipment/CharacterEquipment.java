@@ -36,6 +36,10 @@ public class CharacterEquipment {
     @JoinColumn(name = "boots_item_id")
     private ItemInstance boots;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "main_hand_item_id")
+    private ItemInstance mainHand;
+
 
 
 }

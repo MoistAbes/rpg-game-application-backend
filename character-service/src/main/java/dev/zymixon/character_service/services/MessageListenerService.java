@@ -1,6 +1,7 @@
 package dev.zymixon.character_service.services;
 
 import dev.zymixon.character_service.dto.EquipmentChangeDto;
+import dev.zymixon.character_service.dto.EquipmentWeaponChangeDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -64,6 +65,14 @@ public class MessageListenerService {
         logger.info("Received boots change message: {}", equipmentChangeDto);
         // Handle the weapon change message
         characterService.calculateCharacterStats(equipmentChangeDto);
+
+    }
+
+    @RabbitListener(queues = "weaponQueue")
+    public void handleWeaponEquipmentChange(EquipmentWeaponChangeDto equipmentWeaponChangeDto) {
+        logger.info("Received weapon change message: {}", equipmentWeaponChangeDto);
+        // Handle the weapon change message
+        characterService.calculateCharacterWeaponStats(equipmentWeaponChangeDto);
 
     }
 

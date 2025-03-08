@@ -1,11 +1,9 @@
 package dev.zymixon.inventory_service.services;
 
 import dev.zymixon.inventory_service.dto.EquipmentChangeDto;
+import dev.zymixon.inventory_service.dto.EquipmentWeaponChangeDto;
 import dev.zymixon.inventory_service.entities.instance.ItemInstance;
-import dev.zymixon.inventory_service.entities.instance.impl.BootsItemInstance;
-import dev.zymixon.inventory_service.entities.instance.impl.ChestItemInstance;
-import dev.zymixon.inventory_service.entities.instance.impl.GlovesItemInstance;
-import dev.zymixon.inventory_service.entities.instance.impl.HelmetItemInstance;
+import dev.zymixon.inventory_service.entities.instance.impl.*;
 import dev.zymixon.inventory_service.enums.ItemType;
 import dev.zymixon.inventory_service.mappers.ItemStatMapper;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -77,6 +75,15 @@ public class MessageSenderService {
                     sendBootsEquipmentChangeInformation(null, (BootsItemInstance) newEquippedItem, characterId);
                 }
                 break;
+            case WEAPON_ITEM_INSTANCE:
+                if (prevEquippedItem != null && newEquippedItem != null) {
+                    sendWeaponEquipmentChangeInformation((WeaponItemInstance) prevEquippedItem, (WeaponItemInstance) newEquippedItem, characterId);
+                } else if (newEquippedItem == null) {
+                    sendWeaponEquipmentChangeInformation((WeaponItemInstance) prevEquippedItem, null, characterId); // For unequip
+                }else {
+                    //equip
+                    sendWeaponEquipmentChangeInformation(null, (WeaponItemInstance) newEquippedItem, characterId);
+                }
         }
 
 
@@ -245,6 +252,43 @@ public class MessageSenderService {
 
 
         amqpTemplate.convertAndSend("exampleExchange", "bootsRoutingKey", equipmentChangeDto);
+    }
+
+    private void sendWeaponEquipmentChangeInformation(WeaponItemInstance prevEquippedItem, WeaponItemInstance newEquippedItem, Long characterId) {
+        EquipmentWeaponChangeDto equipmentWeaponChangeDto;
+
+        //unequip item
+        if (newEquippedItem == null){
+            equipmentWeaponChangeDto = EquipmentWeaponChangeDto.builder()
+                    .characterId(characterId)
+                    .prevDamageValue(prevEquippedItem.getDamageValue())
+                    .prevItemStats(itemStatMapper.mapListToDto(prevEquippedItem.getStats()))
+                    .build();
+
+            //equip item
+        }else if (prevEquippedItem == null){
+//            System.out.println("Boots changed: " + "empty" + " -> " + newEquippedItem.getBootsTemplate().getName());
+            equipmentWeaponChangeDto = EquipmentWeaponChangeDto.builder()
+                    .characterId(characterId)
+                    .newDamageValue(newEquippedItem.getDamageValue())
+                    .newItemStats(itemStatMapper.mapListToDto(newEquippedItem.getStats()))
+                    .build();
+        }else {
+            //swap items
+//            System.out.println("Boots swapping: " + prevEquippedItem.getBootsTemplate().getName() + " -> " + newEquippedItem.getBootsTemplate().getName());
+            equipmentWeaponChangeDto = EquipmentWeaponChangeDto.builder()
+                    .characterId(characterId)
+//                    .prevArmorValue(prevEquippedItem.getArmorValue())
+                    .prevDamageValue(prevEquippedItem.getDamageValue())
+                    .prevItemStats(itemStatMapper.mapListToDto(prevEquippedItem.getStats()))
+//                    .newArmorValue(newEquippedItem.getArmorValue())
+                    .newDamageValue(newEquippedItem.getDamageValue())
+                    .newItemStats(itemStatMapper.mapListToDto(newEquippedItem.getStats()))
+                    .build();
+        }
+
+
+        amqpTemplate.convertAndSend("exampleExchange", "weaponRoutingKey", equipmentWeaponChangeDto);
     }
 
 }

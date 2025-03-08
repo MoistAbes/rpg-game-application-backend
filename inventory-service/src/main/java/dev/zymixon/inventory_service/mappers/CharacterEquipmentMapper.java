@@ -21,6 +21,7 @@ public class CharacterEquipmentMapper {
                 .chest(itemInstanceMapper.mapToDto(characterEquipment.getChest()))
                 .gloves(itemInstanceMapper.mapToDto(characterEquipment.getGloves()))
                 .boots(itemInstanceMapper.mapToDto(characterEquipment.getBoots()))
+                .mainHand(itemInstanceMapper.mapToDto(characterEquipment.getMainHand()))
                 .build();
     }
 }

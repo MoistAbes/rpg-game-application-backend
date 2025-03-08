@@ -38,6 +38,8 @@ public interface CharacterEquipmentRepository extends JpaRepository<CharacterEqu
     @Query("UPDATE CharacterEquipment ce SET ce.boots = :itemInstance WHERE ce.id = :characterEquipmentId")
     void updateCharacterEquipmentBoots(@Param("itemInstance") ItemInstance itemInstance, @Param("characterEquipmentId") Long characterEquipmentId);
 
-
-
+    @Modifying
+    @Transactional
+    @Query("UPDATE CharacterEquipment ce SET ce.mainHand = :itemInstance WHERE ce.id = :characterEquipmentId")
+    void updateCharacterEquipmentMainHand(@Param("itemInstance") ItemInstance itemInstance, @Param("characterEquipmentId") Long equipmentId);
 }

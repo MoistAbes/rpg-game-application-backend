@@ -41,33 +41,36 @@ public class CharacterInventoryController {
     public ResponseEntity<CharacterInventoryDto> getInventory(@PathVariable Long characterId) {
 
         CharacterInventory characterInventory = characterInventoryService.getCharacterInventory(characterId);
-        System.out.println("INVENTORY: ");
-        for (InventorySlot slot: characterInventory.getInventorySlots()) {
-            System.out.println(slot);
-        }
-        CharacterInventoryDto mapped = characterInventoryMapper.mapToDto(characterInventory);
-        System.out.println("MAPPED INVENTORY: ");
-        for (InventorySlotDto slotDto: mapped.getInventorySlots()) {
-            System.out.println(slotDto);
-        }
+//        System.out.println("INVENTORY: ");
+//        for (InventorySlot slot: characterInventory.getInventorySlots()) {
+//            System.out.println(slot);
+//        }
+//        CharacterInventoryDto mapped = characterInventoryMapper.mapToDto(characterInventory);
+//        System.out.println("MAPPED INVENTORY: ");
+//        for (InventorySlotDto slotDto: mapped.getInventorySlots()) {
+//            System.out.println(slotDto);
+//        }
         return ResponseEntity.ok(characterInventoryMapper.mapToDto(characterInventory));
     }
 
-    //ToDO metoda do zmiany opisane w serwisie
-//    @PostMapping("/add-item/{inventoryId}/{position}/{itemTemplateId}/{itemType}")
-//    public ResponseEntity<Void> addItemToInventory(@PathVariable Long inventoryId, @PathVariable int position, @PathVariable Long itemTemplateId, @PathVariable String itemType) {
-//
-//
-//        characterInventoryService.addItemToInventoryByPosition(inventoryId, position, itemTemplateId, itemType);
-//        return ResponseEntity.ok().build();
-//    }
-//
     @PutMapping("/move-item/{previousPosition}/{newPosition}/{inventoryId}")
     public ResponseEntity<Void> swapItemsInInventory(@PathVariable int previousPosition, @PathVariable int newPosition, @PathVariable Long inventoryId) {
         logger.info("/inventory-service/inventories/move-item/{}/{}/{}", previousPosition, newPosition, inventoryId);
 
 
         characterInventoryService.moveItem(previousPosition, newPosition, inventoryId);
+
+        return ResponseEntity.ok().build();
+
+    }
+
+
+    @DeleteMapping("/delete-item/{inventorySlotId}/{itemInstanceId}")
+    public ResponseEntity<Void> deleteItemFromInventory(@PathVariable Long inventorySlotId, @PathVariable Long itemInstanceId) {
+        logger.info("/inventory-service/inventories/delete-item/{}/{}",inventorySlotId,itemInstanceId);
+
+
+        characterInventoryService.deleteItemFromInventory(inventorySlotId,itemInstanceId);
 
         return ResponseEntity.ok().build();
 

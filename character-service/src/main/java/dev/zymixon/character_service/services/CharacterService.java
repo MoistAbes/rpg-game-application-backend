@@ -63,8 +63,6 @@ public class CharacterService {
             character.setCharacterStats(handleItemUnequip(character, equipmentChangeDto));
             characterStatsRepository.save(handleItemEquip(character, equipmentChangeDto));
             return true;
-
-
         }
     }
 
@@ -72,7 +70,10 @@ public class CharacterService {
 
     private CharacterStats handleItemUnequip(MyCharacter character, EquipmentChangeDto equipmentChangeDto) {
 
-        character.getCharacterStats().setDefense(character.getCharacterStats().getDefense() - equipmentChangeDto.getPrevArmorValue());
+        CharacterStats stats = character.getCharacterStats();
+
+        // Reduce defense by previous armor value
+        stats.setDefense(stats.getDefense() - equipmentChangeDto.getPrevArmorValue());
 
         for (ItemStatDto itemStat : equipmentChangeDto.getPrevItemStats()) {
             ItemStatType statType = ItemStatType.valueOf(itemStat.getItemStatType()); // Convert String to Enum
@@ -87,6 +88,12 @@ public class CharacterService {
                     // Handle unexpected cases if needed
                     break;
             }
+        }
+
+        //ToDO to moze bedzie mozna na jakąś ogólną metode przerobic sprawdzajaca statystyki zeby nie wpadły w niewłasciwe wartosci itd.
+        // **Fail-Safe Check:** If maxHealth < currentHealth, adjust currentHealth
+        if (stats.getCurrentHealth() > stats.getMaxHealth()) {
+            stats.setCurrentHealth(stats.getMaxHealth());
         }
 
         return character.getCharacterStats();
@@ -189,6 +196,13 @@ public class CharacterService {
         }
 
         return character.getCharacterStats();
+    }
+
+    public void updateCharacterLevelAndExperience(Long characterId, int experience, int level) {
+        System.out.println("character id: " + characterId);
+        System.out.println("experience: " + experience);
+        System.out.println("level: " + level);
+        characterRepository.updateCharacterLevelAndExperience(characterId, experience, level);
     }
 
 

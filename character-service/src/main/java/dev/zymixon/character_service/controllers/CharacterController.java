@@ -41,8 +41,12 @@ public class CharacterController {
         logger.info("/characters/get-character/{}/", characterId);
         MyCharacter myCharacter = characterService.getCharacterById(characterId);
 
+        System.out.println("my character: " + myCharacter);
+
         // Map entity to DTO
         MyCharacterDto characterDTO = myCharacterMapper.toDto(myCharacter);
+
+        System.out.println("mapped character: " + characterDTO);
 
         // Fetch experience needed for next level
         Long nextLevelExp = levelExperienceService.getExperienceForLevel(myCharacter.getLevel() + 1);

@@ -3,16 +3,14 @@ package dev.zymixon.inventory_service.entities;
 import dev.zymixon.inventory_service.entities.instance.ItemInstance;
 import dev.zymixon.inventory_service.enums.ItemStatType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ItemStat {
 
     @Id
@@ -28,4 +26,13 @@ public class ItemStat {
     @ManyToOne
     @JoinColumn(name = "item_instance_id")
     private ItemInstance itemInstance;
+
+    @Override
+    public String toString() {
+        return "ItemStat{" +
+                "id=" + id +
+                ", statType=" + statType +
+                ", value=" + value +
+                '}';
+    }
 }

@@ -33,6 +33,7 @@ public class MyCharacter {
                 ", experience=" + experience +
                 ", userId=" + userId +
                 ", goldAmount=" + goldAmount +
+                ", character stats=" + characterStats +
                 '}';
     }
 }

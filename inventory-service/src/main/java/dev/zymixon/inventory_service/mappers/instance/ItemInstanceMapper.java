@@ -12,27 +12,16 @@ import java.util.Map;
 @Service
 public class ItemInstanceMapper {
 
-    private final CommonItemInstanceMapper commonItemInstanceMapper;
-    private final HelmetItemInstanceMapper helmetItemInstanceMapper;
-    private final ChestItemInstanceMapper chestItemInstanceMapper;
-    private final GlovesItemInstanceMapper glovesItemInstanceMapper;
-    private final BootsItemInstanceMapper bootsItemInstanceMapper;
-
-    private final SwordItemInstanceMapper swordItemInstanceMapper;
-    private final AxeItemInstanceMapper axeItemInstanceMapper;
-
     // Use a map for more scalable mapping
     private final Map<ItemType, ItemMapper> itemMappers;
 
     public ItemInstanceMapper(CommonItemInstanceMapper commonItemInstanceMapper,
-                              HelmetItemInstanceMapper helmetItemInstanceMapper, ChestItemInstanceMapper chestItemInstanceMapper, GlovesItemInstanceMapper glovesItemInstanceMapper, BootsItemInstanceMapper bootsItemInstanceMapper, SwordItemInstanceMapper swordItemInstanceMapper, AxeItemInstanceMapper axeItemInstanceMapper) {
-        this.commonItemInstanceMapper = commonItemInstanceMapper;
-        this.helmetItemInstanceMapper = helmetItemInstanceMapper;
-        this.chestItemInstanceMapper = chestItemInstanceMapper;
-        this.glovesItemInstanceMapper = glovesItemInstanceMapper;
-        this.bootsItemInstanceMapper = bootsItemInstanceMapper;
-        this.swordItemInstanceMapper = swordItemInstanceMapper;
-        this.axeItemInstanceMapper = axeItemInstanceMapper;
+                              HelmetItemInstanceMapper helmetItemInstanceMapper,
+                              ChestItemInstanceMapper chestItemInstanceMapper,
+                              GlovesItemInstanceMapper glovesItemInstanceMapper,
+                              BootsItemInstanceMapper bootsItemInstanceMapper,
+                              SwordItemInstanceMapper swordItemInstanceMapper,
+                              AxeItemInstanceMapper axeItemInstanceMapper) {
 
         // Initialize a map of mappers to handle different types of ItemInstances
         itemMappers = Map.of(

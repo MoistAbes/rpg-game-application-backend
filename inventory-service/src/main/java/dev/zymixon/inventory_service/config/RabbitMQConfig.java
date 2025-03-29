@@ -30,6 +30,13 @@ public class RabbitMQConfig {
     public static final String BOOTS_ROUTING_KEY = "bootsRoutingKey";
     public static final String WEAPON_ROUTING_KEY = "weaponRoutingKey";
 
+    //COMBAT ITEM DROP REQUEST
+    private static final String COMBAT_REQUEST_QUEUE = "combatRequestQueue";
+    private static final String COMBAT_REQUEST_EXCHANGE = "combatRequestExchange";
+    private static final String COMBAT_REQUEST_ROUTING_KEY = "combatRequestRoutingKey";
+
+
+
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
@@ -46,11 +53,6 @@ public class RabbitMQConfig {
     @Bean
     public Queue responseQueue() {
         return new Queue("responseQueue", false); // Predefined response queue
-    }
-
-    @Bean
-    public Queue replyQueue() {
-        return new Queue("tempReplyQueue", true);  // Ensure the queue is durable or temporary as needed
     }
 
     @Bean
@@ -119,4 +121,20 @@ public class RabbitMQConfig {
     public Binding weaponBinding() {
         return BindingBuilder.bind(weaponQueue()).to(exchange()).with(WEAPON_ROUTING_KEY);
     }
+
+    //COMBAT ITEM DROP REQUEST
+    @Bean
+    public Queue combatRequestQueue() {
+        return new Queue(COMBAT_REQUEST_QUEUE, false);
+    }
+    @Bean
+    public TopicExchange combatRequestExchange() {
+        return new TopicExchange(COMBAT_REQUEST_EXCHANGE);
+    }
+    @Bean
+    public Binding combatRequestBinding() {
+        return BindingBuilder.bind(combatRequestQueue()).to(combatRequestExchange()).with(COMBAT_REQUEST_ROUTING_KEY);
+    }
+
+
 }

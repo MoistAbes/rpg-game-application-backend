@@ -1,21 +1,24 @@
 package dev.zymixon.inventory_service.entities.instance.impl;
 
 import dev.zymixon.inventory_service.entities.template.SwordItemTemplate;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @DiscriminatorValue("SWORD")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
 public class SwordItemInstance extends WeaponItemInstance{
 
     //ToDO przemyslec jak zrobić z templatem bo chyba do zmiany jest w armorach
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "sword_template_id")
     private SwordItemTemplate swordTemplate;
 

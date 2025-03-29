@@ -5,8 +5,8 @@ public enum ItemStatType {
     BONUS_HEALTH,
     BONUS_ARMOR,
     BONUS_DAMAGE,
-    ATTACK_SPEED,
-    CRIT_CHANCE,
+    CRITICAL_CHANCE,
+    CRITICAL_DAMAGE,
     LIFESTEAL
 
 }

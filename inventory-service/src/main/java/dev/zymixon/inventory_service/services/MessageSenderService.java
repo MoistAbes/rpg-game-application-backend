@@ -122,14 +122,23 @@ public class MessageSenderService {
                     .newItemStats(itemStatMapper.mapListToDto(newEquippedItem.getStats()))
                     .build();
         }
-        amqpTemplate.convertAndSend("exampleExchange", "helmetRoutingKey", equipmentChangeDto);
+//        amqpTemplate.convertAndSend("exampleExchange", "helmetRoutingKey", equipmentChangeDto);
+        Object response = amqpTemplate.convertSendAndReceive(
+                "exampleExchange", "helmetRoutingKey", equipmentChangeDto);
+
+        if (response != null) {
+            System.out.println("Received response: " + response);
+            // Continue with your sender method logic now that response is received
+        } else {
+            System.out.println("No response received");
+        }
     }
 
     private void sendChestEquipmentChangeInformation(ChestItemInstance prevEquippedItem, ChestItemInstance newEquippedItem, Long characterId) {
         EquipmentChangeDto equipmentChangeDto;
 
         //unequip item
-        if (newEquippedItem == null){
+        if (newEquippedItem == null) {
             System.out.println("Chest changed: " + prevEquippedItem.getChestTemplate().getName() + " -> " + "empty");
             equipmentChangeDto = EquipmentChangeDto.builder()
                     .characterId(characterId)
@@ -138,14 +147,14 @@ public class MessageSenderService {
                     .build();
 
             //equip item
-        }else if (prevEquippedItem == null){
+        } else if (prevEquippedItem == null) {
             System.out.println("Chest changed: " + "empty" + " -> " + newEquippedItem.getChestTemplate().getName());
             equipmentChangeDto = EquipmentChangeDto.builder()
                     .characterId(characterId)
                     .newArmorValue(newEquippedItem.getArmorValue())
                     .newItemStats(itemStatMapper.mapListToDto(newEquippedItem.getStats()))
                     .build();
-        }else {
+        } else {
             //swap items
             System.out.println("Chest swapping: " + prevEquippedItem.getChestTemplate().getName() + " -> " + newEquippedItem.getChestTemplate().getName());
             equipmentChangeDto = EquipmentChangeDto.builder()
@@ -156,7 +165,17 @@ public class MessageSenderService {
                     .newItemStats(itemStatMapper.mapListToDto(newEquippedItem.getStats()))
                     .build();
         }
-        amqpTemplate.convertAndSend("exampleExchange", "chestRoutingKey", equipmentChangeDto);
+//        amqpTemplate.convertAndSend("exampleExchange", "chestRoutingKey", equipmentChangeDto);
+
+        Object response = amqpTemplate.convertSendAndReceive(
+                "exampleExchange", "chestRoutingKey", equipmentChangeDto);
+
+        if (response != null) {
+            System.out.println("Received response: " + response);
+            // Continue with your sender method logic now that response is received
+        } else {
+            System.out.println("No response received");
+        }
     }
 
     private void sendGlovesEquipmentChangeInformation(GlovesItemInstance prevEquippedItem, GlovesItemInstance newEquippedItem, Long characterId) {
@@ -194,28 +213,15 @@ public class MessageSenderService {
         //orginalna wersja
 //        amqpTemplate.convertAndSend("exampleExchange", "glovesRoutingKey", equipmentChangeDto);
 
-        // Generate a unique correlation ID for tracking the message
-        String correlationId = UUID.randomUUID().toString();
+        Object response = amqpTemplate.convertSendAndReceive(
+                "exampleExchange", "glovesRoutingKey", equipmentChangeDto);
 
-        // Create temporary callback queue for the response
-        String replyToQueue = "tempReplyQueue";  // You can create a temporary queue name
-        // Set up MessageProperties
-        MessageProperties messageProperties = new MessageProperties();
-        messageProperties.setReplyTo(replyToQueue); // Specify the queue to send response to
-        messageProperties.setCorrelationId(correlationId); // Unique ID for tracking the message
-
-        // Send the message, RabbitTemplate will handle serialization automatically
-        amqpTemplate.convertAndSend("exampleExchange", "glovesRoutingKey", equipmentChangeDto, message -> {
-            message.getMessageProperties().setReplyTo(replyToQueue);
-            message.getMessageProperties().setCorrelationId(correlationId);
-            return message;
-        });
-
-        // Now, we can use receiveAndConvert to block and wait for the response
-        Object response = amqpTemplate.receiveAndConvert(replyToQueue);
-
-        // The response will be received after the listener has processed the message
-        System.out.println("Received response: " + response);
+        if (response != null) {
+            System.out.println("Received response: " + response);
+            // Continue with your sender method logic now that response is received
+        } else {
+            System.out.println("No response received");
+        }
     }
 
     private void sendBootsEquipmentChangeInformation(BootsItemInstance prevEquippedItem, BootsItemInstance newEquippedItem, Long characterId) {
@@ -251,7 +257,17 @@ public class MessageSenderService {
         }
 
 
-        amqpTemplate.convertAndSend("exampleExchange", "bootsRoutingKey", equipmentChangeDto);
+//        amqpTemplate.convertAndSend("exampleExchange", "bootsRoutingKey", equipmentChangeDto);
+
+        Object response = amqpTemplate.convertSendAndReceive(
+                "exampleExchange", "bootsRoutingKey", equipmentChangeDto);
+
+        if (response != null) {
+            System.out.println("Received response: " + response);
+            // Continue with your sender method logic now that response is received
+        } else {
+            System.out.println("No response received");
+        }
     }
 
     private void sendWeaponEquipmentChangeInformation(WeaponItemInstance prevEquippedItem, WeaponItemInstance newEquippedItem, Long characterId) {
@@ -288,7 +304,17 @@ public class MessageSenderService {
         }
 
 
-        amqpTemplate.convertAndSend("exampleExchange", "weaponRoutingKey", equipmentWeaponChangeDto);
+//        amqpTemplate.convertAndSend("exampleExchange", "weaponRoutingKey", equipmentWeaponChangeDto);
+
+        Object response = amqpTemplate.convertSendAndReceive(
+                "exampleExchange", "weaponRoutingKey", equipmentWeaponChangeDto);
+
+        if (response != null) {
+            System.out.println("Received response: " + response);
+            // Continue with your sender method logic now that response is received
+        } else {
+            System.out.println("No response received");
+        }
     }
 
 }

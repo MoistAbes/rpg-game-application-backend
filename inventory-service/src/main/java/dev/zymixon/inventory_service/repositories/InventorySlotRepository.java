@@ -33,4 +33,8 @@ public interface InventorySlotRepository extends JpaRepository<InventorySlot, Lo
     void clearInventorySlotItem(@Param("inventorySlotId") Long inventorySlotId);
 
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE InventorySlot s SET s.itemInstance = NULL WHERE s.id = :inventorySlotId")
+    void removeItemFromSlot(Long inventorySlotId);
 }

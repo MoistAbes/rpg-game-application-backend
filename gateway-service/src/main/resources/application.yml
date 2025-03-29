@@ -39,6 +39,27 @@ spring:
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
 
+        - id: ZONE-SERVICE
+          uri: lb://ZONE-SERVICE
+          predicates:
+            - Path=/zone-service/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+        - id: ENEMY-SERVICE
+          uri: lb://ENEMY-SERVICE
+          predicates:
+            - Path=/enemy-service/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+        - id: COMBAT-SERVICE
+          uri: lb://COMBAT-SERVICE
+          predicates:
+            - Path=/combat-service/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
 eureka:
   client:
     service-url:

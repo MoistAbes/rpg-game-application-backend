@@ -31,4 +31,13 @@ public class LevelExperienceService {
     public Long getExperienceForLevel(int level) {
         return levelExperienceMap.getOrDefault(level, Long.MAX_VALUE); // Prevent errors
     }
+
+    public boolean isLevelUp(int level, int experience) {
+
+        Long experienceToLevelUp = levelExperienceMap.get(level);
+
+
+        return experienceToLevelUp <= experience;
+
+    }
 }

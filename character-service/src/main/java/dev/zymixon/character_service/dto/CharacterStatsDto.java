@@ -8,7 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class CharacterStatsDto {
+    private Long id;
     private int attack;
     private int defense;
     private int maxHealth;

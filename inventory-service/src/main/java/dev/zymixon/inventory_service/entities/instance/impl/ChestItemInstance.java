@@ -1,20 +1,23 @@
 package dev.zymixon.inventory_service.entities.instance.impl;
 
 import dev.zymixon.inventory_service.entities.template.ChestItemTemplate;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @DiscriminatorValue("CHEST")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
 public class ChestItemInstance extends ArmorItemInstance {
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "chest_template_id")
     private ChestItemTemplate chestTemplate;
 

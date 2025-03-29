@@ -17,4 +17,19 @@ public class CharacterStatsService {
         //ToDO dorobic tutaj exception na to
         return characterStatsRepository.findCharacterStatsByCharacterId(characterId).orElseThrow(() -> new RuntimeException("Character stats not found"));
     }
+
+    public void updateCharacterCurrentHealth(Long characterStatsId, int currentHealth) {
+        characterStatsRepository.updateCharacterCurrentHealth(characterStatsId, currentHealth);
+    }
+
+    public void handleLevelUp(Long characterStatsId) {
+
+        //ToDO poki co na sztywno dodajemy zycie attack i defense
+        int maxHealthIncrement = 10;
+        int attackIncrement = 5;
+        int defenseIncrement = 5;
+
+        characterStatsRepository.updateCharacterStatsLevelUp(characterStatsId, maxHealthIncrement, attackIncrement, defenseIncrement);
+
+    }
 }

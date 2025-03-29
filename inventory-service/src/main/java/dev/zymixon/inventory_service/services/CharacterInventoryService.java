@@ -6,6 +6,7 @@ import dev.zymixon.inventory_service.entities.inventory.InventorySlot;
 import dev.zymixon.inventory_service.exceptions.CharacterInventoryNotFoundException;
 import dev.zymixon.inventory_service.repositories.CharacterInventoryRepository;
 import dev.zymixon.inventory_service.repositories.InventorySlotRepository;
+import dev.zymixon.inventory_service.repositories.item_instance.ItemInstanceRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -16,10 +17,12 @@ public class CharacterInventoryService {
 
     private final CharacterInventoryRepository characterInventoryRepository;
     private final InventorySlotRepository inventorySlotRepository;
+    private final ItemInstanceRepository itemInstanceRepository;
 
-    public CharacterInventoryService(CharacterInventoryRepository characterInventoryRepository, InventorySlotRepository inventorySlotRepository) {
+    public CharacterInventoryService(CharacterInventoryRepository characterInventoryRepository, InventorySlotRepository inventorySlotRepository, ItemInstanceRepository itemInstanceRepository) {
         this.characterInventoryRepository = characterInventoryRepository;
         this.inventorySlotRepository = inventorySlotRepository;
+        this.itemInstanceRepository = itemInstanceRepository;
     }
 
 
@@ -109,6 +112,12 @@ public class CharacterInventoryService {
     }
 
 
+    public void deleteItemFromInventory(Long inventorySlotId ,Long itemInstanceId) {
 
 
+        inventorySlotRepository.removeItemFromSlot(inventorySlotId);
+
+        itemInstanceRepository.deleteById(itemInstanceId);
+
+    }
 }

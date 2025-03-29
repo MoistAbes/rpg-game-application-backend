@@ -14,6 +14,11 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
     public static final String GENERAL_QUEUE = "exampleQueue";
 
+    //COMBAT SERVICE
+    public static final String CHARACTER_QUEUE = "characterQueue";
+    public static final String CHARACTER_EXCHANGE_NAME = "characterExchange";
+    public static final String CHARACTER_ROUTING_KEY = "characterRoutingKey";
+
     public static final String HELMET_QUEUE = "helmetQueue";
     public static final String CHEST_QUEUE = "chestQueue";
     public static final String GLOVES_QUEUE = "glovesQueue";
@@ -119,6 +124,30 @@ public class RabbitMQConfig {
     @Bean
     public Binding weaponBinding() {
         return BindingBuilder.bind(weaponQueue()).to(exchange()).with(WEAPON_ROUTING_KEY);
+    }
+
+    //COMBAT SERVICE
+    //  QUEUES
+    @Bean
+    public Queue characterResponseQueue() {
+        return new Queue("characterResponseQueue", false); // Predefined response queue
+    }
+
+    @Bean
+    public Queue characterQueue() {
+        return new Queue(CHARACTER_QUEUE, false);
+    }
+
+    //EXCHANGE
+    @Bean
+    public TopicExchange characterExchange() {
+        return new TopicExchange(CHARACTER_EXCHANGE_NAME);
+    }
+
+    //ROUTING
+    @Bean
+    public Binding characterBinding() {
+        return BindingBuilder.bind(characterQueue()).to(characterExchange()).with(CHARACTER_ROUTING_KEY);
     }
 
 }

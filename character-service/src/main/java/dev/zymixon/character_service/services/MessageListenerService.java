@@ -2,6 +2,8 @@ package dev.zymixon.character_service.services;
 
 import dev.zymixon.character_service.dto.EquipmentChangeDto;
 import dev.zymixon.character_service.dto.EquipmentWeaponChangeDto;
+import dev.zymixon.character_service.entities.MyCharacter;
+import dev.zymixon.character_service.model.CombatResultUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -14,12 +16,16 @@ import org.springframework.stereotype.Service;
 public class MessageListenerService {
 
     private final CharacterService characterService;
+    private final LevelExperienceService levelExperienceService;
     private final AmqpTemplate amqpTemplate;
+    private final CharacterStatsService characterStatsService;
 
 
-    public MessageListenerService(CharacterService characterService, AmqpTemplate amqpTemplate) {
+    public MessageListenerService(CharacterService characterService, LevelExperienceService levelExperienceService, AmqpTemplate amqpTemplate, CharacterStatsService characterStatsService) {
         this.characterService = characterService;
+        this.levelExperienceService = levelExperienceService;
         this.amqpTemplate = amqpTemplate;
+        this.characterStatsService = characterStatsService;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(MessageListenerService.class);
@@ -28,68 +34,72 @@ public class MessageListenerService {
 
     // Listener for helmet equipment change messages
     @RabbitListener(queues = "helmetQueue")
-    public void handleHelmetEquipmentChange(EquipmentChangeDto equipmentChangeDto) {
+    public boolean  handleHelmetEquipmentChange(EquipmentChangeDto equipmentChangeDto) {
         logger.info("Received helmet change message: {}", equipmentChangeDto);
         // Handle the helmet change message
 
-        characterService.calculateCharacterStats(equipmentChangeDto);
-
+        return characterService.calculateCharacterStats(equipmentChangeDto);
     }
 
     // Listener for weapon equipment change messages
     @RabbitListener(queues = "chestQueue")
-    public void handleChestEquipmentChange(EquipmentChangeDto equipmentChangeDto) {
+    public boolean handleChestEquipmentChange(EquipmentChangeDto equipmentChangeDto) {
         logger.info("Received chest change message: {}", equipmentChangeDto);
         // Handle the weapon change message
-        characterService.calculateCharacterStats(equipmentChangeDto);
+        return characterService.calculateCharacterStats(equipmentChangeDto);
 
     }
 
     // Listener for weapon equipment change messages
     @RabbitListener(queues = "glovesQueue")
-    public void handleGlovesEquipmentChange(EquipmentChangeDto equipmentChangeDto, Message message) {
+    public boolean handleGlovesEquipmentChange(EquipmentChangeDto equipmentChangeDto, Message message) {
         logger.info("Received gloves change message: {}", equipmentChangeDto);
         // Handle the weapon change message
-        boolean resultStatus = characterService.calculateCharacterStats(equipmentChangeDto);
+        return characterService.calculateCharacterStats(equipmentChangeDto);
 
-        //send message that updating is done
-        System.out.println("listener status before send back reponse: " + resultStatus);
-        if (resultStatus) {
-            sendResponse(message, true);
-        }
     }
 
     // Listener for weapon equipment change messages
     @RabbitListener(queues = "bootsQueue")
-    public void handleBootsEquipmentChange(EquipmentChangeDto equipmentChangeDto) {
+    public boolean handleBootsEquipmentChange(EquipmentChangeDto equipmentChangeDto) {
         logger.info("Received boots change message: {}", equipmentChangeDto);
         // Handle the weapon change message
-        characterService.calculateCharacterStats(equipmentChangeDto);
+        return characterService.calculateCharacterStats(equipmentChangeDto);
 
     }
 
     @RabbitListener(queues = "weaponQueue")
-    public void handleWeaponEquipmentChange(EquipmentWeaponChangeDto equipmentWeaponChangeDto) {
+    public boolean handleWeaponEquipmentChange(EquipmentWeaponChangeDto equipmentWeaponChangeDto) {
         logger.info("Received weapon change message: {}", equipmentWeaponChangeDto);
         // Handle the weapon change message
-        characterService.calculateCharacterWeaponStats(equipmentWeaponChangeDto);
+        return characterService.calculateCharacterWeaponStats(equipmentWeaponChangeDto);
 
     }
 
+    //COMBAT SERVICE
+    @RabbitListener(queues = "characterQueue")
+    public boolean handleCharacterUpdate(CombatResultUpdate combatResultUpdate) {
 
-    private void sendResponse(Message requestMessage, boolean success) {
-        String replyToQueue = requestMessage.getMessageProperties().getReplyTo();
-        String correlationId = requestMessage.getMessageProperties().getCorrelationId();
+        //check if level up
+        while (levelExperienceService.isLevelUp(combatResultUpdate.getLevel() + 1, combatResultUpdate.getExperience())) {
 
-        // Set up message properties and send response (boolean as a simple response)
-        MessageProperties responseProperties = new MessageProperties();
-        responseProperties.setReplyTo(replyToQueue);
-        responseProperties.setCorrelationId(correlationId);
+            combatResultUpdate.setLevel(combatResultUpdate.getLevel() + 1);
+            combatResultUpdate.setExperience((int) (combatResultUpdate.getExperience()  - levelExperienceService.getExperienceForLevel(combatResultUpdate.getLevel())));
 
-        // Serialize the boolean value to a message
-        Message responseMessage = new Message(String.valueOf(success).getBytes(), responseProperties);
 
-        // Send the response message to the reply-to queue
-        amqpTemplate.send(replyToQueue, responseMessage);
+            //ToDO zrobic jakis konkretny system levelowania poki co nudne dodawanie statystyk tylko jest
+            //add max health and bonus armor and bonus attack
+            characterStatsService.handleLevelUp(combatResultUpdate.getCharacterStatsId());
+
+        }
+
+
+        //save updated character level and experience
+        characterService.updateCharacterLevelAndExperience(combatResultUpdate.getCharacterId(), combatResultUpdate.getExperience(), combatResultUpdate.getLevel());
+        //update character current health
+        characterStatsService.updateCharacterCurrentHealth(combatResultUpdate.getCharacterStatsId(), combatResultUpdate.getCurrentHealth());
+
+
+        return true;
     }
 }

@@ -16,5 +16,8 @@ public class CharacterStatsDto {
     private int maxHealth;
     private int currentHealth;
 
+    private float criticalChance;
+    private float criticalDamage;
+
 
 }

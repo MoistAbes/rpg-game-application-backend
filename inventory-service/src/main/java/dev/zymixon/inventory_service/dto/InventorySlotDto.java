@@ -2,12 +2,13 @@ package dev.zymixon.inventory_service.dto;
 
 import dev.zymixon.inventory_service.dto.instance.ItemInstanceDto;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 public class InventorySlotDto {
 
     private Long id;

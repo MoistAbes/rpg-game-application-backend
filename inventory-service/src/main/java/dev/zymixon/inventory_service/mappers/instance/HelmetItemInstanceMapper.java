@@ -27,6 +27,7 @@ public class HelmetItemInstanceMapper implements ItemMapper {
                 .helmetTemplate(helmetItemTemplateMapper.mapToDto(helmetItemInstance.getHelmetTemplate()))
                 .armorValue(helmetItemInstance.getArmorValue())
                 .type(String.valueOf(ItemType.HELMET_ITEM_INSTANCE))
+                .levelRequirement(helmetItemInstance.getLevelRequirement())
                 .armorType(helmetItemInstance.getArmorType())
                 .itemRarity(String.valueOf(helmetItemInstance.getItemRarity()))
                 .itemStats(itemStatMapper.mapListToDto(helmetItemInstance.getStats()))

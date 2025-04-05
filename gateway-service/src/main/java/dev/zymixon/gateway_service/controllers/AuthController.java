@@ -33,17 +33,6 @@ public class AuthController {
         return authService.verifyCredentials(loginRequest);
 
     }
-//    @PostMapping("/login/{username}/{password}")
-//    public Mono<ResponseEntity<String>> login(@PathVariable String username, @PathVariable String password) throws UserNotFoundException {
-////        logger.info("/auth/login | username: {}, password: {}", loginRequest.getUsername(), loginRequest.getPassword());
-//        logger.info("/auth/login | username: {}, password: {}", username, password);
-//
-////        return authService.verifyCredentials(loginRequest);
-//
-//
-//        return Mono.just(ResponseEntity.ok("Bearer " + "lol"));
-//    }
-
 
 
 }

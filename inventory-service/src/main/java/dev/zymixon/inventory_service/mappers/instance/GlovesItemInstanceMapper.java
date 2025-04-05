@@ -28,6 +28,7 @@ public class GlovesItemInstanceMapper implements ItemMapper {
                 .armorValue(glovesItemInstance.getArmorValue())
                 .type(String.valueOf(ItemType.GLOVES_ITEM_INSTANCE))
                 .armorType(glovesItemInstance.getArmorType())
+                .levelRequirement(glovesItemInstance.getLevelRequirement())
                 .itemRarity(String.valueOf(glovesItemInstance.getItemRarity()))
                 .itemStats(itemStatMapper.mapListToDto(glovesItemInstance.getStats()))
                 .build();

@@ -114,9 +114,7 @@ public class CharacterInventoryService {
 
     public void deleteItemFromInventory(Long inventorySlotId ,Long itemInstanceId) {
 
-
-        inventorySlotRepository.removeItemFromSlot(inventorySlotId);
-
+        inventorySlotRepository.clearInventorySlotItem(inventorySlotId);
         itemInstanceRepository.deleteById(itemInstanceId);
 
     }

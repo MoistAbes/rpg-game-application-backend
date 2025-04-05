@@ -1,9 +1,6 @@
 package dev.zymixon.character_service.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -25,6 +22,13 @@ public class CharacterStats {
 
     private int maxHealth;
     private int currentHealth;
+
+    @Column(columnDefinition = "FLOAT DEFAULT 5.0")
+    private float criticalChance;
+
+    @Column(columnDefinition = "FLOAT DEFAULT 150.0")
+    private float criticalDamage;
+
 
 
 }

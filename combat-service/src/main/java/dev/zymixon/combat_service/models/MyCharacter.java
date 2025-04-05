@@ -17,6 +17,7 @@ public class MyCharacter {
     private int goldAmount;
 
     private CharacterStats characterStats;
+    private CharacterInventory inventory;
 
     @Override
     public String toString() {
@@ -28,6 +29,7 @@ public class MyCharacter {
                 ", nextLevelExperience=" + nextLevelExperience +
                 ", goldAmount=" + goldAmount +
                 ", characterStats=" + characterStats +
+                ", inventory=" + inventory +
                 '}';
     }
 }

@@ -7,7 +7,9 @@ import dev.zymixon.inventory_service.enums.ItemType;
 import dev.zymixon.inventory_service.mappers.ItemMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemInstanceMapper {
@@ -51,6 +53,13 @@ public class ItemInstanceMapper {
         } else {
             throw new IllegalStateException("Unknown ItemInstance type: " + itemType);
         }
+    }
+
+    public List<ItemInstanceDto> mapToDtoList(List<ItemInstance> itemInstanceList) {
+
+        return itemInstanceList.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     private ItemType getItemType(ItemInstance itemInstance) {

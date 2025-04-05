@@ -48,7 +48,9 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
 
             System.out.println("Authentication: " + auth.getCredentials());
 
+
             return authenticationManager.authenticate(auth).map(SecurityContextImpl::new);
+
         }
 
         return Mono.empty();

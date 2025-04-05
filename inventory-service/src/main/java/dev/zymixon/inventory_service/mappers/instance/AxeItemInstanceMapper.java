@@ -29,6 +29,7 @@ public class AxeItemInstanceMapper implements ItemMapper {
                 .axeTemplate(axeItemTemplateMapper.mapToDto(axeItemInstance.getAxeTemplate()))
                 .damageValue(axeItemInstance.getDamageValue())
                 .type(String.valueOf(ItemType.AXE_ITEM_INSTANCE))
+                .levelRequirement(axeItemInstance.getLevelRequirement())
                 .itemRarity(String.valueOf(axeItemInstance.getItemRarity()))
                 .itemStats(itemStatMapper.mapListToDto(axeItemInstance.getStats()))
                 .build();

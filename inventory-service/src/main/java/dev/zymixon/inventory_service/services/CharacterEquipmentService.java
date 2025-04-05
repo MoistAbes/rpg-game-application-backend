@@ -30,10 +30,15 @@ public class CharacterEquipmentService {
                 .orElseThrow(() -> new CharacterEquipmentNotFoundException("Character equipment belonging to character id: " + characterId + " not found!"));
     }
 
+    public CharacterEquipment getCharacterEquipmentByEquipmentId(Long equipmentId) {
+        return characterEquipmentRepository.findById(equipmentId)
+                .orElseThrow(() -> new CharacterEquipmentNotFoundException(""));
+    }
+
 
     public void unequipItemToEmptySlot(Long inventorySlotId, Long equipmentId, ItemType itemType) {
 
-        CharacterEquipment characterEquipment = getCharacterEquipment(equipmentId);
+        CharacterEquipment characterEquipment = getCharacterEquipmentByEquipmentId(equipmentId);
         ItemInstance equipmentItem = getEquipmentItem(itemType, characterEquipment);
 
         //remove equipped item
@@ -50,7 +55,7 @@ public class CharacterEquipmentService {
     public void unequipItemToTakenSlot(Long inventorySlotId, Long equipmentId, ItemType itemType) {
 
         InventorySlot inventorySlot = inventorySlotRepository.findById(inventorySlotId).orElseThrow(() -> new InventorySlotNotFoundException("Inventory slot not found!"));
-        CharacterEquipment characterEquipment = getCharacterEquipment(equipmentId);
+        CharacterEquipment characterEquipment = getCharacterEquipmentByEquipmentId(equipmentId);
 
         ItemInstance equipmentItem = getEquipmentItem(itemType, characterEquipment);
 
@@ -76,7 +81,8 @@ public class CharacterEquipmentService {
 
 
         InventorySlot inventorySlot = inventorySlotRepository.findById(inventorySlotId).orElseThrow(() -> new InventorySlotNotFoundException("Inventory slot not found!"));
-        CharacterEquipment characterEquipment = getCharacterEquipment(equipmentId);
+//        CharacterEquipment characterEquipment = getCharacterEquipment(equipmentId);
+        CharacterEquipment characterEquipment = characterEquipmentRepository.findById(equipmentId).orElseThrow(() -> new CharacterEquipmentNotFoundException("Character equipment not found!"));
 
         //null inventory item
         inventorySlotRepository.clearInventorySlotItem(inventorySlotId);
@@ -94,7 +100,7 @@ public class CharacterEquipmentService {
     public void equipItemToTakenSlot(Long inventorySlotId, Long equipmentId, ItemType itemType) {
 
         InventorySlot inventorySlot = inventorySlotRepository.findById(inventorySlotId).orElseThrow(() -> new InventorySlotNotFoundException("Inventory slot not found!"));
-        CharacterEquipment characterEquipment = getCharacterEquipment(equipmentId);
+        CharacterEquipment characterEquipment = getCharacterEquipmentByEquipmentId(equipmentId);
 
         //null inventory item
         inventorySlotRepository.clearInventorySlotItem(inventorySlotId);
@@ -161,5 +167,19 @@ public class CharacterEquipmentService {
             }
             default -> throw new InventorySlotNotFoundException("Inventory slot not found!");
         }
+    }
+
+    public void createCharacterEquipment(Long characterId) {
+
+        CharacterEquipment characterEquipment = CharacterEquipment.builder()
+                .characterId(characterId)
+                .helmet(null)
+                .chest(null)
+                .gloves(null)
+                .boots(null)
+                .mainHand(null)
+                .build();
+
+        characterEquipmentRepository.save(characterEquipment);
     }
 }

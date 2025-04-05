@@ -16,6 +16,6 @@ public class ZoneService {
     }
 
     public List<Zone> getAllZones() {
-        return zoneRepository.findAll();
+        return zoneRepository.findAllZones();
     }
 }

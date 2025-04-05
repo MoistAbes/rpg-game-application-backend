@@ -27,6 +27,7 @@ public class SwordItemInstanceMapper implements ItemMapper {
                 .swordTemplate(swordItemTemplateMapper.mapToDto(swordItemInstance.getSwordTemplate()))
                 .damageValue(swordItemInstance.getDamageValue())
                 .type(String.valueOf(ItemType.SWORD_ITEM_INSTANCE))
+                .levelRequirement(swordItemInstance.getLevelRequirement())
                 .itemRarity(String.valueOf(swordItemInstance.getItemRarity()))
                 .itemStats(itemStatMapper.mapListToDto(swordItemInstance.getStats()))
                 .build();

@@ -24,6 +24,9 @@ public class Location {
     @Column(columnDefinition = "integer default 1")
     private int maxEnemyLevel;
 
+    @Column(columnDefinition = "integer default 1")
+    private int position;
+
     @ManyToOne
     @JoinColumn(name = "zone_id", nullable = false)
     private Zone zone;

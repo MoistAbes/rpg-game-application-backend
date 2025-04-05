@@ -11,13 +11,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class CombatService {
 
     private static final Logger logger = LoggerFactory.getLogger(CombatService.class);
-
-
 
     private final MessageSenderService messageSenderService;
 
@@ -68,28 +67,36 @@ public class CombatService {
         //if win calculate exp gain and update character stats
         if (combatResult.isSuccess()) {
 
-            //generate item drops
-            messageSenderService.sendItemDropGenerateRequest(combatRequest);
+            // Start both tasks in parallel
+            long startDropTime = System.nanoTime();
+            CompletableFuture<List<Long>> droppedItemsFuture = messageSenderService.sendItemDropGenerateRequest(combatRequest)
+                    .whenComplete((result, throwable) -> {
+                        long endDropTime = System.nanoTime();
+                        System.out.println("sendItemDropGenerateRequest took: " + (endDropTime - startDropTime) / 1_000_000 + " ms");
+                    });
 
-            int experienceGained = calculateExperienceGain(
-                    combatRequest.getEnemyInstance().getLevel(),
-                    combatRequest.getEnemyInstance().getTemplate().getEnemyTier(),
-                    combatRequest.getEnemyInstance().getRank());
+            long startCharacterUpdateTime = System.nanoTime();
+            CompletableFuture<Void> characterUpdateFuture = CompletableFuture.runAsync(() -> {
+                int experienceGained = calculateExperienceGain(
+                        combatRequest.getEnemyInstance().getLevel(),
+                        combatRequest.getEnemyInstance().getTemplate().getEnemyTier(),
+                        combatRequest.getEnemyInstance().getRank());
 
+                int currentExperience = combatRequest.getPlayerCharacter().getExperience();
+                combatResult.setExperience(experienceGained);
+                combatRequest.getPlayerCharacter().setExperience(currentExperience + experienceGained);
 
-            System.out.println("Experience gained: " +  experienceGained);
+                messageSenderService.sendUpdatedCharacter(combatRequest.getPlayerCharacter());
 
-            int currentExperience = combatRequest.getPlayerCharacter().getExperience();
-            combatResult.setExperience(experienceGained);
-            combatRequest.getPlayerCharacter().setExperience(currentExperience + experienceGained);
+                long endCharacterUpdateTime = System.nanoTime();
+                System.out.println("Character update process took: " + (endCharacterUpdateTime - startCharacterUpdateTime) / 1_000_000 + " ms");
+            });
 
-
-            //send updated character
-            messageSenderService.sendUpdatedCharacter(combatRequest.getPlayerCharacter());
-
-
+            // Wait for both to complete
+            List<Long> droppedItems = droppedItemsFuture.join();
+            combatResult.setDroppedItems(droppedItems);
+            characterUpdateFuture.join();
         }
-
 
         return combatResult;
     }
@@ -100,8 +107,19 @@ public class CombatService {
         int playerAttack = combatRequest.getPlayerCharacter().getCharacterStats().getAttack();
         int enemyDefense = combatRequest.getEnemyInstance().getCurrentArmor();
 
-        return Math.max(playerAttack - enemyDefense, 0);
+        float critChance = combatRequest.getPlayerCharacter().getCharacterStats().getCriticalChance();
+        float critDamageMultiplier = combatRequest.getPlayerCharacter().getCharacterStats().getCriticalDamage() / 100.0f;
 
+        // Generate a random number between 0 and 100
+        double randomRoll = Math.random() * 100;
+
+        // Determine if it's a crit
+        boolean isCriticalHit = randomRoll <= critChance;
+
+        // Apply crit multiplier if it's a critical hit
+        int finalDamage = (int) ((isCriticalHit ? playerAttack * critDamageMultiplier : playerAttack) - enemyDefense);
+
+        return Math.max(finalDamage, 0);
     }
 
     private void playerAttack(CombatRequestDto combatRequest, List<CombatLog> combatLogs, int turnCounter) {

@@ -69,8 +69,9 @@ public class ItemPropertiesGeneratorService {
 
     private static double generateItemStatTypeValue() {
         double value = RANDOM.nextDouble(1, 11); // Generates a number between 1.00 and 10.99
-        return Math.round(value * 100.0) / 100.0; // Rounds to 2 decimal places
+        return Math.floor(value + 0.5); // Round to the nearest whole number
     }
+
 
 
     public static int generateArmorValue(int enemyLevel) {

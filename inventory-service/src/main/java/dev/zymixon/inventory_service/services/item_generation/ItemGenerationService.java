@@ -8,6 +8,7 @@ import dev.zymixon.inventory_service.enums.ItemRarity;
 import dev.zymixon.inventory_service.models.ItemDropGenerateRequest;
 import dev.zymixon.inventory_service.repositories.ItemTemplateRepository;
 import dev.zymixon.inventory_service.repositories.item_instance.*;
+import dev.zymixon.inventory_service.services.InventorySlotService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,8 +26,9 @@ public class ItemGenerationService {
     private final SwordItemInstanceRepository swordItemInstanceRepository;
     private final AxeItemInstanceRepository axeItemInstanceRepository;
     private final CommonItemInstanceRepository commonItemInstanceRepository;
+    private final InventorySlotService inventorySlotService;
 
-    public ItemGenerationService(ItemTemplateRepository itemTemplateRepository, HelmetItemInstanceRepository helmetItemInstanceRepository, ChestItemInstanceRepository chestItemInstanceRepository, GlovesItemInstanceRepository glovesItemInstanceRepository, BootsItemInstanceRepository bootsItemInstanceRepository, SwordItemInstanceRepository swordItemInstanceRepository, AxeItemInstanceRepository axeItemInstanceRepository, CommonItemInstanceRepository commonItemInstanceRepository) {
+    public ItemGenerationService(ItemTemplateRepository itemTemplateRepository, HelmetItemInstanceRepository helmetItemInstanceRepository, ChestItemInstanceRepository chestItemInstanceRepository, GlovesItemInstanceRepository glovesItemInstanceRepository, BootsItemInstanceRepository bootsItemInstanceRepository, SwordItemInstanceRepository swordItemInstanceRepository, AxeItemInstanceRepository axeItemInstanceRepository, CommonItemInstanceRepository commonItemInstanceRepository, InventorySlotService inventorySlotService) {
         this.itemTemplateRepository = itemTemplateRepository;
         this.helmetItemInstanceRepository = helmetItemInstanceRepository;
         this.chestItemInstanceRepository = chestItemInstanceRepository;
@@ -35,75 +37,48 @@ public class ItemGenerationService {
         this.swordItemInstanceRepository = swordItemInstanceRepository;
         this.axeItemInstanceRepository = axeItemInstanceRepository;
         this.commonItemInstanceRepository = commonItemInstanceRepository;
+        this.inventorySlotService = inventorySlotService;
     }
 
-    public boolean generateCombatItemDrops(ItemDropGenerateRequest itemDropGenerateRequest) {
-
-        //ToDO
-        //Zeby item stworzyc potrzebne bedzie nam level przeciwnika
-
-
-        //ToDO trzeba bedzie przemyslec jak zrobic szanse na drop itd.
-
-
-
+    public List<Long> generateCombatItemDrops(ItemDropGenerateRequest itemDropGenerateRequest) {
 
         List<ItemTemplate> itemTemplates = itemTemplateRepository.findAllByIsEnemyDrop();
-        System.out.println("POSSIBLE ITEM DROPS");
-        for (ItemTemplate itemTemplate : itemTemplates) {
-            System.out.println(itemTemplate.getName());
-        }
-
         List<ItemTemplate> droppedItems = getDroppedItems(itemTemplates, 3, 0.5f, 0.7f);
+        List<Long> droppedItemIds = new ArrayList<>();
 
         System.out.println("DROPPED ITEMS");
         for (ItemTemplate itemTemplate : droppedItems) {
             System.out.println(itemTemplate.getName() + " type: " + itemTemplate.getItemType());
         }
-        //ToDO zrobic tera generacje instancji itema jak juz mamy template
 
         for (ItemTemplate droppedItem : droppedItems) {
-            generateItemInstance(droppedItem, itemDropGenerateRequest.getEnemyLevel());
+            droppedItemIds.add(generateItemInstance(droppedItem, itemDropGenerateRequest.getEnemyLevel()));
         }
 
 
+        //metoda doda do wolnych slotow dropniete itemy a te na które nie ma miejsca usunie
+        inventorySlotService.handleSavingDroppedItems(itemDropGenerateRequest, droppedItemIds);
 
-
-        return true;
-
-
+        return droppedItemIds;
     }
 
-    private void generateItemInstance(ItemTemplate droppedItem, int enemyLevel) {
+    private Long generateItemInstance(ItemTemplate droppedItem, int enemyLevel) {
 
         String itemType = droppedItem.getItemType();
 
-        switch (itemType) {
-            case "HelmetItemTemplate":
-                generateHelmetItem((HelmetItemTemplate) droppedItem, enemyLevel);
-                break;
-            case "ChestItemTemplate":
-                generateChestItem((ChestItemTemplate) droppedItem, enemyLevel);
-                break;
-            case "GlovesItemTemplate":
-                generateGlovesItem((GlovesItemTemplate) droppedItem, enemyLevel);
-                break;
-            case "BootsItemTemplate":
-                generateBootsItem((BootsItemTemplate) droppedItem, enemyLevel);
-                break;
-            case "SwordItemTemplate":
-                generateSwordItem((SwordItemTemplate) droppedItem, enemyLevel);
-                break;
-            case "AxeItemTemplate":
-                generateAxeItem((AxeItemTemplate) droppedItem, enemyLevel);
-                break;
-            case "CommonItemTemplate":
-                generateCommonItem((CommonItemTemplate) droppedItem);
-                break;
-            default:
+        return switch (itemType) {
+            case "HelmetItemTemplate" -> generateHelmetItem((HelmetItemTemplate) droppedItem, enemyLevel);
+            case "ChestItemTemplate" -> generateChestItem((ChestItemTemplate) droppedItem, enemyLevel);
+            case "GlovesItemTemplate" -> generateGlovesItem((GlovesItemTemplate) droppedItem, enemyLevel);
+            case "BootsItemTemplate" -> generateBootsItem((BootsItemTemplate) droppedItem, enemyLevel);
+            case "SwordItemTemplate" -> generateSwordItem((SwordItemTemplate) droppedItem, enemyLevel);
+            case "AxeItemTemplate" -> generateAxeItem((AxeItemTemplate) droppedItem, enemyLevel);
+            case "CommonItemTemplate" -> generateCommonItem((CommonItemTemplate) droppedItem);
+            default -> {
                 System.out.println("Item type not known: " + itemType); // Proper statement
-                break;
-        }
+                yield 0L;
+            }
+        };
 
     }
 
@@ -150,7 +125,7 @@ public class ItemGenerationService {
     }
 
 
-    private HelmetItemInstance generateHelmetItem(HelmetItemTemplate itemTemplate, int enemyLevel) {
+    private Long generateHelmetItem(HelmetItemTemplate itemTemplate, int enemyLevel) {
 
         ItemRarity generatedItemRarity = ItemPropertiesGeneratorService.generateItemRarity();
         ArmorType generatedItemArmorType = ItemPropertiesGeneratorService.generateItemArmorType();
@@ -179,10 +154,10 @@ public class ItemGenerationService {
         System.out.println("SAVED HELMET ITEM");
         System.out.println(generatedHelmetItemInstance);
 
-        return generatedHelmetItemInstance;
+        return generatedHelmetItemInstance.getId();
     }
 
-    private ChestItemInstance generateChestItem(ChestItemTemplate itemTemplate, int enemyLevel) {
+    private Long generateChestItem(ChestItemTemplate itemTemplate, int enemyLevel) {
 
         ItemRarity generatedItemRarity = ItemPropertiesGeneratorService.generateItemRarity();
         ArmorType generatedItemArmorType = ItemPropertiesGeneratorService.generateItemArmorType();
@@ -211,10 +186,10 @@ public class ItemGenerationService {
         System.out.println("SAVED CHEST ITEM");
         System.out.println(generatedChestItemInstance);
 
-        return generatedChestItemInstance;
+        return generatedChestItemInstance.getId();
     }
 
-    private GlovesItemInstance generateGlovesItem(GlovesItemTemplate itemTemplate, int enemyLevel) {
+    private Long generateGlovesItem(GlovesItemTemplate itemTemplate, int enemyLevel) {
         ItemRarity generatedItemRarity = ItemPropertiesGeneratorService.generateItemRarity();
         ArmorType generatedItemArmorType = ItemPropertiesGeneratorService.generateItemArmorType();
         int generatedItemQuality = ItemPropertiesGeneratorService.generateItemQuality();
@@ -242,11 +217,11 @@ public class ItemGenerationService {
         System.out.println("SAVED GLOVES ITEM");
         System.out.println(generatedGlovesItemInstance);
 
-        return generatedGlovesItemInstance;
+        return generatedGlovesItemInstance.getId();
 
     }
 
-    private BootsItemInstance generateBootsItem(BootsItemTemplate itemTemplate, int enemyLevel) {
+    private Long generateBootsItem(BootsItemTemplate itemTemplate, int enemyLevel) {
         ItemRarity generatedItemRarity = ItemPropertiesGeneratorService.generateItemRarity();
         ArmorType generatedItemArmorType = ItemPropertiesGeneratorService.generateItemArmorType();
         int generatedItemQuality = ItemPropertiesGeneratorService.generateItemQuality();
@@ -273,11 +248,11 @@ public class ItemGenerationService {
         System.out.println("SAVED Boots ITEM");
         System.out.println(generatedBootsItemInstance);
 
-        return generatedBootsItemInstance;
+        return generatedBootsItemInstance.getId();
 
     }
 
-    private SwordItemInstance generateSwordItem(SwordItemTemplate itemTemplate, int enemyLevel) {
+    private Long generateSwordItem(SwordItemTemplate itemTemplate, int enemyLevel) {
         ItemRarity generatedItemRarity = ItemPropertiesGeneratorService.generateItemRarity();
         int generatedItemQuality = ItemPropertiesGeneratorService.generateItemQuality();
 
@@ -300,10 +275,10 @@ public class ItemGenerationService {
         System.out.println("SAVED SWORD ITEM");
         System.out.println(swordItemInstance);
 
-        return swordItemInstance;
+        return swordItemInstance.getId();
     }
 
-    private AxeItemInstance generateAxeItem(AxeItemTemplate itemTemplate, int enemyLevel) {
+    private Long generateAxeItem(AxeItemTemplate itemTemplate, int enemyLevel) {
         ItemRarity generatedItemRarity = ItemPropertiesGeneratorService.generateItemRarity();
         int generatedItemQuality = ItemPropertiesGeneratorService.generateItemQuality();
 
@@ -326,10 +301,10 @@ public class ItemGenerationService {
         System.out.println("SAVED AXE ITEM");
         System.out.println(axeItemInstance);
 
-        return axeItemInstance;
+        return axeItemInstance.getId();
     }
 
-    private CommonItemInstance generateCommonItem(CommonItemTemplate itemTemplate) {
+    private Long generateCommonItem(CommonItemTemplate itemTemplate) {
 
         CommonItemInstance commonItemInstance = CommonItemInstance.builder()
                 .itemRarity(ItemRarity.COMMON)
@@ -345,7 +320,7 @@ public class ItemGenerationService {
         System.out.println("SAVED COMMON ITEM");
         System.out.println(commonItemInstance);
 
-        return commonItemInstance;
+        return commonItemInstance.getId();
 
     }
 

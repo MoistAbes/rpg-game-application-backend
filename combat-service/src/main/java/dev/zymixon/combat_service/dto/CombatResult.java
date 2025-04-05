@@ -16,4 +16,5 @@ public class CombatResult {
     private boolean success;
     List<CombatLog> combatLogs;
     private int experience;
+    private List<Long> droppedItems;
 }

@@ -55,7 +55,7 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
         } catch (ExpiredJwtException e) {
             // Handle the case when the token is expired
             logger.error("JWT expired: {}", e.getMessage());
-            // You could return a custom response or throw an exception here
+
             return Mono.empty();  // You can choose how you want to handle it (e.g., return Mono.empty() or throw a custom exception)
         } catch (Exception e) {
             // General error handling

@@ -30,6 +30,7 @@ public class BootsItemInstanceMapper implements ItemMapper {
                 .armorValue(bootsItemInstance.getArmorValue())
                 .type(String.valueOf(ItemType.BOOTS_ITEM_INSTANCE))
                 .armorType(bootsItemInstance.getArmorType())
+                .levelRequirement(bootsItemInstance.getLevelRequirement())
                 .itemRarity(String.valueOf(bootsItemInstance.getItemRarity()))
                 .itemStats(itemStatMapper.mapListToDto(bootsItemInstance.getStats()))
                 .build();

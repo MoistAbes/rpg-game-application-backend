@@ -13,14 +13,10 @@ import java.util.List;
 @Repository
 public interface InventorySlotRepository extends JpaRepository<InventorySlot, Long> {
 
-//    @Transactional
-//    @Modifying
-//    @Query("UPDATE InventorySlot i SET i.inventoryItem.id = :inventoryItemId WHERE i.position = :position AND i.inventory.id = :inventoryId")
-//    void addInventoryItemToEmptySlotByPositionAndInventoryId(@Param("inventoryItemId") Long inventoryItemId, @Param("position") int position, @Param("inventoryId") Long inventoryId);
-//
+
     @Query("SELECT i FROM InventorySlot i WHERE i.inventory.id = :inventoryId AND i.position IN :swappedPositions")
     List<InventorySlot> findByInventoryIdAndPositionIn(Long inventoryId, List<Integer> swappedPositions);
-//
+
     @Transactional
     @Modifying
     @Query("UPDATE InventorySlot s SET s.itemInstance.id = :itemId WHERE s.id = :slotId")
@@ -32,9 +28,4 @@ public interface InventorySlotRepository extends JpaRepository<InventorySlot, Lo
     @Query("UPDATE InventorySlot s SET s.itemInstance = null WHERE s.id = :inventorySlotId")
     void clearInventorySlotItem(@Param("inventorySlotId") Long inventorySlotId);
 
-
-    @Transactional
-    @Modifying
-    @Query("UPDATE InventorySlot s SET s.itemInstance = NULL WHERE s.id = :inventorySlotId")
-    void removeItemFromSlot(Long inventorySlotId);
 }

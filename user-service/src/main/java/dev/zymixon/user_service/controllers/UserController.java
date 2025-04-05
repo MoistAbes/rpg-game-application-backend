@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping("/register")
     public UserInfo register(@RequestBody UserInfo userInfo) {
-        logger.info("users/register/ {}", userInfo.getUsername());
+        logger.info("users/register/ {}", userInfo);
 
         return userInfoService.createUser(userInfo);
     }

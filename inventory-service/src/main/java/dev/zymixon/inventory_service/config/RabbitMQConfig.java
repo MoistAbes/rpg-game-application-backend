@@ -35,6 +35,24 @@ public class RabbitMQConfig {
     private static final String COMBAT_REQUEST_EXCHANGE = "combatRequestExchange";
     private static final String COMBAT_REQUEST_ROUTING_KEY = "combatRequestRoutingKey";
 
+    public static final String CREATE_NEW_INVENTORY_EQUIPMENT_QUEUE = "createNewInventoryEquipmentQueue";
+    public static final String CREATE_NEW_INVENTORY_EQUIPMENT_EXCHANGE_NAME = "createNewInventoryEquipmentExchange";
+    public static final String CREATE_NEW_INVENTORY_EQUIPMENT_ROUTING_KEY = "createNewInventoryEquipmentRoutingKey";
+
+    //NEW CHARACTER INVENTORY AND EQUIPMENT CREATION
+    @Bean
+    public Queue createNewInventoryEquipmentQueue() {
+        return new Queue(CREATE_NEW_INVENTORY_EQUIPMENT_QUEUE, false);
+    }
+    @Bean
+    public TopicExchange createNewInventoryEquipmentExchange() {
+        return new TopicExchange(CREATE_NEW_INVENTORY_EQUIPMENT_EXCHANGE_NAME);
+    }
+    @Bean
+    public Binding createNewInventoryEquipmentBinding() {
+        return BindingBuilder.bind(createNewInventoryEquipmentQueue()).to(createNewInventoryEquipmentExchange()).with(CREATE_NEW_INVENTORY_EQUIPMENT_ROUTING_KEY);
+    }
+
 
 
     @Bean

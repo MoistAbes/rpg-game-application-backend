@@ -33,19 +33,13 @@ public class CharacterEquipmentController {
 
     @GetMapping("/get-equipment/{characterId}")
     public ResponseEntity<CharacterEquipmentDto> getEquipment(@PathVariable Long characterId) {
+        logger.info("/inventory-service/equipments/get-equipment/{}", characterId);
+
 
         CharacterEquipment characterEquipment = characterEquipmentService.getCharacterEquipment(characterId);
 
 
         CharacterEquipmentDto mappedEquipment = characterEquipmentMapper.mapToDto(characterEquipment);
-//        System.out.println("MAPPED EQUIPMENT: ");
-//
-//
-//        System.out.println("Helmet: " + mappedEquipment.getHelmet());
-//        System.out.println("Chest: " + mappedEquipment.getChest());
-//        System.out.println("Gloves: " + mappedEquipment.getGloves());
-//        System.out.println("Boots: " + mappedEquipment.getBoots());
-
 
         return ResponseEntity.ok(mappedEquipment);
     }

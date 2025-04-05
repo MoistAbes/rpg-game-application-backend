@@ -35,6 +35,24 @@ public class RabbitMQConfig {
     public static final String BOOTS_ROUTING_KEY = "bootsRoutingKey";
     public static final String WEAPON_ROUTING_KEY = "weaponRoutingKey";
 
+    public static final String CREATE_NEW_INVENTORY_EQUIPMENT_QUEUE = "createNewInventoryEquipmentQueue";
+    public static final String CREATE_NEW_INVENTORY_EQUIPMENT_EXCHANGE_NAME = "createNewInventoryEquipmentExchange";
+    public static final String CREATE_NEW_INVENTORY_EQUIPMENT_ROUTING_KEY = "createNewInventoryEquipmentRoutingKey";
+
+    //NEW CHARACTER INVENTORY AND EQUIPMENT CREATION
+    @Bean
+    public Queue createNewInventoryEquipmentQueue() {
+        return new Queue(CREATE_NEW_INVENTORY_EQUIPMENT_QUEUE, false);
+    }
+    @Bean
+    public TopicExchange createNewInventoryEquipmentExchange() {
+        return new TopicExchange(CREATE_NEW_INVENTORY_EQUIPMENT_EXCHANGE_NAME);
+    }
+    @Bean
+    public Binding createNewInventoryEquipmentBinding() {
+        return BindingBuilder.bind(createNewInventoryEquipmentQueue()).to(createNewInventoryEquipmentExchange()).with(CREATE_NEW_INVENTORY_EQUIPMENT_ROUTING_KEY);
+    }
+
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {

@@ -1,10 +1,13 @@
 package dev.zymixon.inventory_service.dto.instance;
 
+
 import dev.zymixon.inventory_service.dto.ItemStatDto;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 @Getter
 @Setter

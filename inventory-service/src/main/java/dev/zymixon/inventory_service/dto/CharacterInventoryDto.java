@@ -1,6 +1,7 @@
 package dev.zymixon.inventory_service.dto;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 public class CharacterInventoryDto {
     private Long id;
     private List<InventorySlotDto> inventorySlots;

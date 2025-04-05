@@ -27,10 +27,10 @@ public class CharacterService {
         this.characterStatsRepository = characterStatsRepository;
     }
 
-    public MyCharacter createCharacter(String name, Long userId) {
+    public Long createCharacter(String name, Long userId) {
         //ToDo
         //dodac zabezpieczenie zeby nie można było utworzyc 2 postaci o tych samych nazwach
-        return characterRepository.save(CharacterCreatorUtil.generateCharacter(name, userId));
+        return characterRepository.save(CharacterCreatorUtil.generateCharacter(name, userId)).getId();
     }
 
     public List<MyCharacter> getCharactersByUserId(Long userId) {
@@ -84,6 +84,15 @@ public class CharacterService {
                 case BONUS_ARMOR:
                     character.getCharacterStats().setDefense((int) (character.getCharacterStats().getDefense() - itemStat.getValue()));
                     break;
+                case BONUS_DAMAGE:
+                    character.getCharacterStats().setAttack((int) (character.getCharacterStats().getAttack() - itemStat.getValue()));
+                    break;
+                case CRITICAL_CHANCE:
+                    character.getCharacterStats().setCriticalChance((float) (character.getCharacterStats().getCriticalChance() - itemStat.getValue()));
+                    break;
+                case CRITICAL_DAMAGE:
+                    character.getCharacterStats().setCriticalDamage((float) (character.getCharacterStats().getCriticalDamage() - itemStat.getValue()));
+                    break;
                 default:
                     // Handle unexpected cases if needed
                     break;
@@ -111,6 +120,15 @@ public class CharacterService {
                     break;
                 case BONUS_ARMOR:
                     character.getCharacterStats().setDefense((int) (character.getCharacterStats().getDefense() + itemStat.getValue()));
+                    break;
+                case BONUS_DAMAGE:
+                    character.getCharacterStats().setAttack((int) (character.getCharacterStats().getAttack() + itemStat.getValue()));
+                    break;
+                case CRITICAL_CHANCE:
+                    character.getCharacterStats().setCriticalChance((float) (character.getCharacterStats().getCriticalChance() + itemStat.getValue()));
+                    break;
+                case CRITICAL_DAMAGE:
+                    character.getCharacterStats().setCriticalDamage((float) (character.getCharacterStats().getCriticalDamage() + itemStat.getValue()));
                     break;
                 default:
                     // Handle unexpected cases if needed
@@ -168,6 +186,15 @@ public class CharacterService {
                 case BONUS_ARMOR:
                     character.getCharacterStats().setDefense((int) (character.getCharacterStats().getDefense() + itemStat.getValue()));
                     break;
+                case BONUS_DAMAGE:
+                    character.getCharacterStats().setAttack((int) (character.getCharacterStats().getAttack() + itemStat.getValue()));
+                    break;
+                case CRITICAL_CHANCE:
+                    character.getCharacterStats().setCriticalChance((float) (character.getCharacterStats().getCriticalChance() + itemStat.getValue()));
+                    break;
+                case CRITICAL_DAMAGE:
+                    character.getCharacterStats().setCriticalDamage((float) (character.getCharacterStats().getCriticalDamage() + itemStat.getValue()));
+                    break;
                 default:
                     // Handle unexpected cases if needed
                     break;
@@ -188,6 +215,15 @@ public class CharacterService {
                     break;
                 case BONUS_ARMOR:
                     character.getCharacterStats().setDefense((int) (character.getCharacterStats().getDefense() - itemStat.getValue()));
+                    break;
+                case BONUS_DAMAGE:
+                    character.getCharacterStats().setAttack((int) (character.getCharacterStats().getAttack() - itemStat.getValue()));
+                    break;
+                case CRITICAL_CHANCE:
+                    character.getCharacterStats().setCriticalChance((float) (character.getCharacterStats().getCriticalChance() - itemStat.getValue()));
+                    break;
+                case CRITICAL_DAMAGE:
+                    character.getCharacterStats().setCriticalDamage((float) (character.getCharacterStats().getCriticalDamage() - itemStat.getValue()));
                     break;
                 default:
                     // Handle unexpected cases if needed

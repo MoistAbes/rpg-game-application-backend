@@ -58,7 +58,6 @@ public class RabbitMqConfig {
         return BindingBuilder.bind(combatRequestQueue()).to(combatRequestExchange()).with(COMBAT_REQUEST_ROUTING_KEY);
     }
 
-
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();

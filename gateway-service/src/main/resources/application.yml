@@ -60,6 +60,13 @@ spring:
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
 
+        - id: QUEST-SERVICE
+          uri: lb://QUEST-SERVICE
+          predicates:
+            - Path=/quest-service/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
 eureka:
   client:
     service-url:

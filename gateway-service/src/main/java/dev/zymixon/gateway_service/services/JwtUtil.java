@@ -30,7 +30,9 @@ public class JwtUtil {
                 .claim("userId", userId)
                 .claim("username", username)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
+                .expiration(setExpiration(12))
+//                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
+//                .expiration(new Date(System.currentTimeMillis() + 1000 * 60)) // 1 minute expiration
                 .signWith(getSigningKey()) // Secure key
                 .compact();
     }
@@ -75,5 +77,14 @@ public class JwtUtil {
         System.out.println("Checking if token is expired");
         return extractExpiration(token).before(new Date());
     }
+
+    // Method to set expiration based on hours
+    public static Date setExpiration(int hours) {
+        // Ensure the multiplication happens in long to avoid integer overflow or casting issues
+        long expirationTimeInMillis = 1000L * 60L * 60L * hours; // Explicitly use long for all the values involved
+        return new Date(System.currentTimeMillis() + expirationTimeInMillis);  // Add the current time to get the future expiration time
+    }
+
+
 
 }

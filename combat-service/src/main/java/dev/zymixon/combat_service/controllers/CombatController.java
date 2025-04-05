@@ -24,8 +24,11 @@ public class CombatController {
     @PutMapping("/start")
     public ResponseEntity<CombatResult> startCombat(@RequestBody CombatRequestDto combatRequestDto) {
         logger.info("/combat-service/combat/start");
+        System.out.println("COMBAT REQUEST DTO: " + combatRequestDto);
 
         CombatResult combatResult = combatService.calculateCombat(combatRequestDto);
+
+        System.out.println("COMBAT RESULT: " + combatResult);
 
         return ResponseEntity.ok(combatResult);
     }

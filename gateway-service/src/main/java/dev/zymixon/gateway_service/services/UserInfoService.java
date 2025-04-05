@@ -17,6 +17,6 @@ public class UserInfoService {
 
     public UserInfo findUserByUsername(String username) throws UserNotFoundException {
         return userInfoRepository.findByUsername(username)
-                .orElseThrow(() -> new UnauthorizedException("Authorization failed"));
+                .orElseThrow(() -> new UnauthorizedException("Authorization failed wrong username or password"));
     }
 }

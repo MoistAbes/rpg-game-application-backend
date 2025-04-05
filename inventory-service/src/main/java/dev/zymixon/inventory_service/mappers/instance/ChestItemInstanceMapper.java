@@ -28,6 +28,7 @@ public class ChestItemInstanceMapper implements ItemMapper {
                 .chestTemplate(chestItemTemplateMapper.mapToDto(chestItemInstance.getChestTemplate()))
                 .armorValue(chestItemInstance.getArmorValue())
                 .type(String.valueOf(ItemType.CHEST_ITEM_INSTANCE))
+                .levelRequirement(chestItemInstance.getLevelRequirement())
                 .armorType(chestItemInstance.getArmorType())
                 .itemRarity(String.valueOf(chestItemInstance.getItemRarity()))
                 .itemStats(itemStatMapper.mapListToDto(chestItemInstance.getStats()))

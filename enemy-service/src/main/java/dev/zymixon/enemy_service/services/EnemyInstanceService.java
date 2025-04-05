@@ -99,7 +99,7 @@ public class EnemyInstanceService {
     }
 
     private float getLevelMultiplier(int enemyLevel) {
-        return 1.0f + (enemyLevel - 1) * 0.05f; // Increase stats by 5% for each level
+        return 1.0f + (enemyLevel - 1) * 0.20f; // Increase stats by 5% for each level
     }
 
     private Integer getRandomEnemyLevel(Integer minEnemyLevel, Integer maxEnemyLevel) {

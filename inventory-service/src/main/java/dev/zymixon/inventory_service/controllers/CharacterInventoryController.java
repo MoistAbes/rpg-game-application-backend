@@ -45,11 +45,11 @@ public class CharacterInventoryController {
 //        for (InventorySlot slot: characterInventory.getInventorySlots()) {
 //            System.out.println(slot);
 //        }
-//        CharacterInventoryDto mapped = characterInventoryMapper.mapToDto(characterInventory);
-//        System.out.println("MAPPED INVENTORY: ");
-//        for (InventorySlotDto slotDto: mapped.getInventorySlots()) {
-//            System.out.println(slotDto);
-//        }
+        CharacterInventoryDto mapped = characterInventoryMapper.mapToDto(characterInventory);
+        System.out.println("MAPPED INVENTORY: ");
+        for (InventorySlotDto slotDto: mapped.getInventorySlots()) {
+            System.out.println(slotDto);
+        }
         return ResponseEntity.ok(characterInventoryMapper.mapToDto(characterInventory));
     }
 

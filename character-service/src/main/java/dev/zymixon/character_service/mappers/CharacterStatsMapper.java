@@ -9,6 +9,8 @@ import org.mapstruct.Mapping;
 public interface  CharacterStatsMapper {
 
     @Mapping(target = "id", source = "id") // Explicitly map id
+    @Mapping(target = "criticalChance", source = "criticalChance")
+    @Mapping(target = "criticalDamage", source = "criticalDamage")
     CharacterStatsDto toDto(CharacterStats characterStats);
 
 }

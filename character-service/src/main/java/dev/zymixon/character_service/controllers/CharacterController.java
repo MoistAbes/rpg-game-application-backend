@@ -6,6 +6,7 @@ import dev.zymixon.character_service.repositories.CharacterRepository;
 import dev.zymixon.character_service.entities.MyCharacter;
 import dev.zymixon.character_service.services.CharacterService;
 import dev.zymixon.character_service.services.LevelExperienceService;
+import dev.zymixon.character_service.services.MessageSenderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +21,15 @@ public class CharacterController {
     private final CharacterService characterService;
     private final MyCharacterMapper myCharacterMapper;
     private final LevelExperienceService levelExperienceService;
+    private final MessageSenderService messageSenderService;
 
     private static final Logger logger = LoggerFactory.getLogger(CharacterController.class);
 
-    public CharacterController(CharacterService characterService, MyCharacterMapper myCharacterMapper, LevelExperienceService levelExperienceService) {
+    public CharacterController(CharacterService characterService, MyCharacterMapper myCharacterMapper, LevelExperienceService levelExperienceService, MessageSenderService messageSenderService) {
         this.characterService = characterService;
         this.myCharacterMapper = myCharacterMapper;
         this.levelExperienceService = levelExperienceService;
+        this.messageSenderService = messageSenderService;
     }
 
     @GetMapping("/get-all-by-user/{userId}")
@@ -57,17 +60,12 @@ public class CharacterController {
     }
 
 
-    //orginalna wersja dziala
-//    @GetMapping("/get-character/{characterId}")
-//    public ResponseEntity<MyCharacter> getCharacter(@PathVariable Long characterId) {
-//        logger.info("/characters/get-character/{}/", characterId);
-//
-//        return ResponseEntity.ok(characterService.getCharacterById(characterId));
-//    }
 
     @PostMapping("/create/{name}/{userId}")
-    public MyCharacter createCharacter(@PathVariable String name, @PathVariable Long userId) {
-        return characterService.createCharacter(name, userId);
+    public Long createCharacter(@PathVariable String name, @PathVariable Long userId) {
+        Long characterId = characterService.createCharacter(name, userId);
+        messageSenderService.sendInventoryEquipmentCreateRequest(characterId);
+        return characterId;
     }
 
 }

@@ -54,6 +54,7 @@ public class Location {
                 ", specialEnemyIds=" + specialEnemyIds +
                 ", minEnemyLevel=" + minEnemyLevel +
                 ", maxEnemyLevel=" + maxEnemyLevel +
+//                ", zone id=" + zone.getId() +
                 '}';
     }
 }

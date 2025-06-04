@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.util.Base64;
-import java.util.Date;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -24,15 +23,15 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String username, Long userId) {
+    public String generateToken(String username, Long userId, Long characterId, Set<String> roles) {
         return Jwts.builder()
                 .subject(username)
                 .claim("userId", userId)
                 .claim("username", username)
+                .claim("characterId", characterId)
+                .claim("roles", roles) // 👈 Add roles claim
                 .issuedAt(new Date())
                 .expiration(setExpiration(12))
-//                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
-//                .expiration(new Date(System.currentTimeMillis() + 1000 * 60)) // 1 minute expiration
                 .signWith(getSigningKey()) // Secure key
                 .compact();
     }
@@ -62,6 +61,13 @@ public class JwtUtil {
     public Long extractUserId(String token) {
         return extractClaim(token, claims -> claims.get("userId", Long.class));
     }
+
+    public Set<String> extractRoles(String token) {
+        return new HashSet<>(
+                extractClaim(token, claims -> (List<String>) claims.get("roles"))
+        );
+    }
+
 
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

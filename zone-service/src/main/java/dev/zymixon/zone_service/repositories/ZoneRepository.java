@@ -12,4 +12,7 @@ public interface ZoneRepository extends JpaRepository<Zone, Long> {
 
     @Query("SELECT z FROM Zone z LEFT JOIN FETCH z.locations l ORDER BY l.position ASC")
     List<Zone> findAllZones();
+
+    @Query("SELECT z.id FROM Zone z")
+    List<Long> findAllZonesId();
 }

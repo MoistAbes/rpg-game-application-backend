@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +44,15 @@ public class Zone {
     @Column(name = "enemy_type") // Column name inside the extra table
     @Enumerated(EnumType.STRING) // Store the enum as a String
     private Set<EnemyTypeEnum> allowedEnemyTypes;
+
+    @ManyToMany
+    @JoinTable(
+            name = "zone_status",  // Explicitly specify the join table name
+            joinColumns = @JoinColumn(name = "zone_id"),  // Foreign key for Zone
+            inverseJoinColumns = @JoinColumn(name = "zone_status_id")  // Foreign key for ZoneStatus
+    )
+    private Set<ZoneStatusEvent> statuses = new HashSet<>();  // A zone can have multiple statuses
+
 
 
     @Override

@@ -18,4 +18,5 @@ public class LocationDto {
     private Set<Long> specialEnemyIds;
     private Integer minEnemyLevel;
     private Integer maxEnemyLevel;
+    private ZoneDto zone;
 }

@@ -2,6 +2,8 @@ package dev.zymixon.gateway_service.dto;
 
 import lombok.*;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor

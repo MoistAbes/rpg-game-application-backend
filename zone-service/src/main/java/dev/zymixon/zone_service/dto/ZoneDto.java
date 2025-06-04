@@ -21,5 +21,6 @@ public class ZoneDto {
     private String iconPath;
     private List<LocationDto> locations;
     private Set<EnemyTypeEnum> allowedEnemyTypes;
+    private Set<ZoneStatusEventDto> statuses;
 
 }

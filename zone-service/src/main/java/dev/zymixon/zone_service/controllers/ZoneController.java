@@ -1,10 +1,8 @@
 package dev.zymixon.zone_service.controllers;
 
-import dev.zymixon.zone_service.dto.LocationDto;
 import dev.zymixon.zone_service.dto.ZoneDto;
-import dev.zymixon.zone_service.entities.Location;
 import dev.zymixon.zone_service.entities.Zone;
-import dev.zymixon.zone_service.mappers.ZoneMapper;
+import dev.zymixon.zone_service.mappers.ZoneCustomMapper;
 import dev.zymixon.zone_service.services.ZoneService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +18,13 @@ import java.util.List;
 public class ZoneController {
 
     private final ZoneService zoneService;
+    private final ZoneCustomMapper zoneMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(ZoneController.class);
 
-    public ZoneController(ZoneService zoneService) {
+    public ZoneController(ZoneService zoneService, ZoneCustomMapper zoneMapper) {
         this.zoneService = zoneService;
+        this.zoneMapper = zoneMapper;
     }
 
     @GetMapping("/get-all")
@@ -32,29 +32,8 @@ public class ZoneController {
         logger.info("/zone-service/zones/get-all");
 
         List<Zone> zones = zoneService.getAllZones();
-//        System.out.println("Fetched zones: " + zones);
+        List<ZoneDto> mappedZones = zoneMapper.toDtoList(zones);
 
-
-        for (Zone zone : zones) {
-            if(!zone.getLocations().isEmpty()) {
-                for (Location location : zone.getLocations()) {
-                    System.out.println("Location minEnemyLevel: " + location.getMinEnemyLevel());
-                    System.out.println("Location maxEnemyLevel: " + location.getMaxEnemyLevel());
-                }
-            }
-        }
-
-        List<ZoneDto> mappedZones = ZoneMapper.INSTANCE.zonesToZoneDtos(zones);
-//        System.out.println("MAPPED ZONES: " + mappedZones);
-
-        for (ZoneDto zone : mappedZones) {
-            if(!zone.getLocations().isEmpty()) {
-                for (LocationDto location : zone.getLocations()) {
-                    System.out.println("Mapped Location minEnemyLevel: " + location.getMinEnemyLevel());
-                    System.out.println("Mapped Location maxEnemyLevel: " + location.getMaxEnemyLevel());
-                }
-            }
-        }
         return ResponseEntity.ok(mappedZones);
     }
 

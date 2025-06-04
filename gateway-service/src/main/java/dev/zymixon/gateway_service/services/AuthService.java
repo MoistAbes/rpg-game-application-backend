@@ -2,6 +2,7 @@ package dev.zymixon.gateway_service.services;
 
 import dev.zymixon.gateway_service.dto.JwtTokenDto;
 import dev.zymixon.gateway_service.entity.UserInfo;
+import dev.zymixon.gateway_service.entity.UserRole;
 import dev.zymixon.gateway_service.exceptions.UserNotFoundException;
 import dev.zymixon.gateway_service.model.LoginRequest;
 import org.slf4j.Logger;
@@ -10,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
@@ -30,12 +34,15 @@ public class AuthService {
     public Mono<ResponseEntity<JwtTokenDto>> verifyCredentials(LoginRequest loginRequest) throws UserNotFoundException {
 
         UserInfo userInfo = userInfoService.findUserByUsername(loginRequest.getUsername());
+        Set<String> userRoles = userInfo.getRoles().stream().map(UserRole::getName).collect(Collectors.toSet());
 
         if (PasswordUtil.passwordMatches(userInfo.getPassword(), loginRequest.getPassword())) {
-            String token = jwtUtil.generateToken(userInfo.getUsername(), userInfo.getId());
+            String token = jwtUtil.generateToken(userInfo.getUsername(), userInfo.getId(), 0L, userRoles);
             System.out.println("Sending token: " + token);
 //            return Mono.just(ResponseEntity.ok("Bearer " + token));
-            return Mono.just(ResponseEntity.ok(JwtTokenDto.builder().token("Bearer " + token).build()));
+            return Mono.just(ResponseEntity.ok(JwtTokenDto.builder()
+                    .token("Bearer " + token)
+                    .build()));
         }else {
             logger.error("Invalid password");
             return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(JwtTokenDto.builder().token("Invalid username or password").build()));
@@ -44,8 +51,4 @@ public class AuthService {
 
     }
 
-//    private boolean passwordMatches(String storedPassword, String enteredPassword) {
-//        // Add password checking logic (e.g., use BCrypt for password comparison)
-//        return storedPassword.equals(enteredPassword);
-//    }
 }
